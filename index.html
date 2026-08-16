@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="VHEOA — practical ideas, product research and purchasing insights for students, professionals and organizations.">
+  <meta name="theme-color" content="#2563eb">
+  <title>VHEOA — Work Smarter. Study Better. Choose Wisely.</title>
+
+  <style>
+    :root{
+      --primary:#2563eb;
+      --primary-dark:#1d4ed8;
+      --primary-light:#eff6ff;
+      --text:#172033;
+      --muted:#64748b;
+      --border:#e5e7eb;
+      --bg:#ffffff;
+      --soft:#f8fafc;
+      --dark:#111827;
+      --success:#15803d;
+      --shadow:0 8px 30px rgba(15,23,42,.07);
+      --radius:18px;
+      --max:1180px;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    html{scroll-behavior:smooth}
+
+    body{
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);
+      background:var(--bg);
+      line-height:1.6;
+    }
+
+    a{text-decoration:none;color:inherit}
+    button,input{font:inherit}
+
+    .container{
+      width:min(var(--max),calc(100% - 36px));
+      margin:auto;
+    }
+
+    /* HEADER */
+    header{
+      position:sticky;
+      top:0;
+      z-index:1000;
+      background:rgba(255,255,255,.96);
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--border);
+    }
+
+    .nav{
+      height:72px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:24px;
+    }
+
+    .logo{
+      font-size:27px;
+      font-weight:900;
+      letter-spacing:-1.5px;
+      color:var(--primary);
+      flex-shrink:0;
+    }
+
+    .nav-links{
+      display:flex;
+      align-items:center;
+      gap:22px;
+      font-size:14px;
+      font-weight:600;
+    }
+
+    .nav-links a:hover{color:var(--primary)}
+
+    .nav-search{
+      border:1px solid var(--border);
+      border-radius:999px;
+      padding:9px 14px;
+      background:var(--soft);
+      cursor:pointer;
+      color:var(--muted);
+      display:flex;
+      align-items:center;
+      gap:7px;
+      white-space:nowrap;
+    }
+
+    .menu-btn{
+      display:none;
+      border:0;
+      background:transparent;
+      font-size:25px;
+      cursor:pointer;
+    }
+
+    /* HERO */
+    .hero{
+      background:
+        radial-gradient(circle at 15% 15%,rgba(37,99,235,.10),transparent 35%),
+        radial-gradient(circle at 85% 80%,rgba(14,165,233,.08),transparent 32%),
+        linear-gradient(180deg,#fff 0%,#f8fbff 100%);
+      padding:88px 0 72px;
+      text-align:center;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      color:var(--primary);
+      background:var(--primary-light);
+      border:1px solid #dbeafe;
+      padding:7px 13px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:800;
+      margin-bottom:18px;
+    }
+
+    .hero h1{
+      max-width:850px;
+      margin:0 auto 18px;
+      font-size:clamp(42px,6vw,70px);
+      line-height:1.02;
+      letter-spacing:-3px;
+      font-weight:900;
+    }
+
+    .hero h1 span{color:var(--primary)}
+
+    .hero p{
+      max-width:720px;
+      margin:0 auto 30px;
+      font-size:18px;
+      color:var(--muted);
+    }
+
+    .search-wrap{
+      max-width:680px;
+      margin:0 auto 22px;
+      position:relative;
+    }
+
+    .search-wrap input{
+      width:100%;
+      height:58px;
+      border:1px solid #cbd5e1;
+      border-radius:15px;
+      padding:0 145px 0 20px;
+      font-size:15px;
+      outline:none;
+      box-shadow:var(--shadow);
+      background:#fff;
+    }
+
+    .search-wrap input:focus{
+      border-color:var(--primary);
+      box-shadow:0 0 0 4px rgba(37,99,235,.10);
+    }
+
+    .search-btn{
+      position:absolute;
+      right:6px;
+      top:6px;
+      height:46px;
+      padding:0 20px;
+      border:0;
+      border-radius:11px;
+      background:var(--primary);
+      color:#fff;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .search-btn:hover{background:var(--primary-dark)}
+
+    .quick-links{
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .quick-links a{
+      color:var(--primary);
+      font-weight:700;
+    }
+
+    /* GENERAL */
+    section{padding:72px 0}
+
+    .section-head{
+      display:flex;
+      align-items:end;
+      justify-content:space-between;
+      gap:20px;
+      margin-bottom:28px;
+    }
+
+    .section-head h2{
+      font-size:32px;
+      line-height:1.15;
+      letter-spacing:-1px;
+    }
+
+    .section-head p{
+      color:var(--muted);
+      max-width:620px;
+      margin-top:7px;
+    }
+
+    .section-link{
+      color:var(--primary);
+      font-weight:800;
+      font-size:14px;
+      white-space:nowrap;
+    }
+
+    /* AUDIENCE */
+    .audience{
+      padding-top:60px;
+    }
+
+    .audience-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:20px;
+    }
+
+    .audience-card{
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      padding:28px;
+      background:#fff;
+      box-shadow:var(--shadow);
+      transition:.2s ease;
+    }
+
+    .audience-card:hover{
+      transform:translateY(-4px);
+      border-color:#bfdbfe;
+    }
+
+    .icon{
+      width:48px;
+      height:48px;
+      display:grid;
+      place-items:center;
+      border-radius:14px;
+      background:var(--primary-light);
+      font-size:24px;
+      margin-bottom:17px;
+    }
+
+    .audience-card h3{
+      font-size:21px;
+      margin-bottom:7px;
+    }
+
+    .audience-card p{
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:18px;
+    }
+
+    .arrow{
+      color:var(--primary);
+      font-weight:800;
+      font-size:14px;
+    }
+
+    /* RESEARCH / THREE VALUES */
+    .soft-section{background:var(--soft)}
+
+    .value-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:22px;
+    }
+
+    .value-item{
+      padding:28px 4px;
+    }
+
+    .value-number{
+      font-size:13px;
+      color:var(--primary);
+      font-weight:900;
+      margin-bottom:10px;
+    }
+
+    .value-item h3{
+      font-size:22px;
+      margin-bottom:8px;
+    }
+
+    .value-item p{
+      color:var(--muted);
+      font-size:14px;
+      max-width:330px;
+    }
+
+    /* CATEGORY GRID */
+    .category-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:16px;
+    }
+
+    .category-card{
+      padding:22px;
+      border:1px solid var(--border);
+      border-radius:15px;
+      background:#fff;
+      min-height:145px;
+      transition:.2s ease;
+    }
+
+    .category-card:hover{
+      border-color:#93c5fd;
+      box-shadow:var(--shadow);
+      transform:translateY(-3px);
+    }
+
+    .category-card .emoji{
+      font-size:23px;
+      margin-bottom:12px;
+    }
+
+    .category-card h3{
+      font-size:17px;
+      margin-bottom:5px;
+    }
+
+    .category-card p{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.5;
+    }
+
+    /* RESEARCH CARDS */
+    .research-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:20px;
+    }
+
+    .article-card{
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      overflow:hidden;
+      background:#fff;
+      box-shadow:0 5px 20px rgba(15,23,42,.05);
+      transition:.2s ease;
+    }
+
+    .article-card:hover{
+      transform:translateY(-4px);
+      box-shadow:var(--shadow);
+    }
+
+    .article-image{
+      height:185px;
+      background:
+        linear-gradient(135deg,#dbeafe,#eff6ff 55%,#e0f2fe);
+      display:grid;
+      place-items:center;
+      color:var(--primary);
+      font-weight:900;
+      font-size:14px;
+      letter-spacing:.3px;
+    }
+
+    .article-content{padding:21px}
+
+    .tag{
+      display:inline-block;
+      font-size:11px;
+      font-weight:900;
+      color:var(--primary);
+      background:var(--primary-light);
+      padding:5px 9px;
+      border-radius:999px;
+      margin-bottom:11px;
+      text-transform:uppercase;
+      letter-spacing:.4px;
+    }
+
+    .article-content h3{
+      font-size:20px;
+      line-height:1.25;
+      margin-bottom:9px;
+    }
+
+    .article-content p{
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:16px;
+    }
+
+    .read-more{
+      color:var(--primary);
+      font-size:13px;
+      font-weight:900;
+    }
+
+    /* VALUE PICKS */
+    .picks{
+      background:#0f172a;
+      color:#fff;
+    }
+
+    .picks .section-head p{color:#cbd5e1}
+    .picks .section-link{color:#93c5fd}
+
+    .pick-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:18px;
+    }
+
+    .pick-card{
+      background:#fff;
+      color:var(--text);
+      border-radius:17px;
+      padding:23px;
+    }
+
+    .pick-label{
+      font-size:11px;
+      color:var(--primary);
+      font-weight:900;
+      text-transform:uppercase;
+      margin-bottom:12px;
+    }
+
+    .pick-card h3{
+      font-size:19px;
+      margin-bottom:8px;
+    }
+
+    .score{
+      display:flex;
+      align-items:baseline;
+      gap:7px;
+      margin:15px 0;
+    }
+
+    .score strong{
+      font-size:31px;
+      color:var(--primary);
+      letter-spacing:-1px;
+    }
+
+    .score span{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .pick-card p{
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:17px;
+    }
+
+    /* SAVINGS */
+    .savings-box{
+      border:1px solid #bfdbfe;
+      border-radius:24px;
+      padding:42px;
+      background:linear-gradient(135deg,#eff6ff,#f8fafc);
+    }
+
+    .savings-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:15px;
+      margin-top:28px;
+    }
+
+    .saving-card{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:15px;
+      padding:22px;
+    }
+
+    .saving-card h3{font-size:17px;margin-bottom:6px}
+    .saving-card p{font-size:13px;color:var(--muted);margin-bottom:13px}
+
+    /* LATEST */
+    .filters{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:25px;
+    }
+
+    .filter{
+      border:1px solid var(--border);
+      background:#fff;
+      color:var(--muted);
+      padding:8px 14px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .filter.active,
+    .filter:hover{
+      color:var(--primary);
+      border-color:#93c5fd;
+      background:var(--primary-light);
+    }
+
+    /* CAREER / STUDENTS */
+    .split-section{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:24px;
+    }
+
+    .feature-panel{
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:31px;
+      background:#fff;
+      box-shadow:var(--shadow);
+    }
+
+    .feature-panel h2{
+      font-size:27px;
+      line-height:1.2;
+      margin-bottom:8px;
+    }
+
+    .feature-panel > p{
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:23px;
+    }
+
+    .mini-list{
+      display:grid;
+      gap:10px;
+    }
+
+    .mini-list a{
+      border-top:1px solid var(--border);
+      padding-top:12px;
+      font-size:14px;
+      font-weight:750;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .mini-list a span{color:var(--primary)}
+
+    /* BUSINESS */
+    .business{
+      background:#f8fafc;
+    }
+
+    .business-inner{
+      background:#111827;
+      color:#fff;
+      border-radius:25px;
+      padding:45px;
+    }
+
+    .business-inner p{
+      color:#cbd5e1;
+      max-width:720px;
+      margin:10px 0 28px;
+    }
+
+    .business-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:13px;
+    }
+
+    .business-card{
+      padding:20px;
+      border:1px solid #334155;
+      border-radius:14px;
+      background:#172033;
+    }
+
+    .business-card h3{font-size:15px;margin-bottom:6px}
+    .business-card p{font-size:12px;margin:0;color:#94a3b8}
+
+    /* METHODOLOGY */
+    .method-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:40px;
+      align-items:center;
+    }
+
+    .method-copy h2{
+      font-size:35px;
+      line-height:1.15;
+      margin-bottom:13px;
+    }
+
+    .method-copy > p{
+      color:var(--muted);
+      margin-bottom:22px;
+    }
+
+    .score-box{
+      border:1px solid #bfdbfe;
+      background:var(--primary-light);
+      border-radius:22px;
+      padding:30px;
+      text-align:center;
+    }
+
+    .score-box small{
+      display:block;
+      color:var(--muted);
+      font-weight:800;
+      margin-bottom:4px;
+    }
+
+    .big-score{
+      color:var(--primary);
+      font-size:58px;
+      font-weight:900;
+      line-height:1;
+      letter-spacing:-3px;
+      margin:8px 0;
+    }
+
+    .method-factors{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+    }
+
+    .factor{
+      padding:14px;
+      background:var(--soft);
+      border-radius:12px;
+      font-size:13px;
+      font-weight:750;
+    }
+
+    /* LINKEDIN */
+    .linkedin{
+      text-align:center;
+      background:var(--primary-light);
+    }
+
+    .linkedin p{
+      max-width:620px;
+      margin:9px auto 22px;
+      color:var(--muted);
+    }
+
+    .button{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:12px 20px;
+      border-radius:11px;
+      background:var(--primary);
+      color:#fff;
+      font-weight:850;
+      font-size:14px;
+      border:0;
+      cursor:pointer;
+    }
+
+    .button:hover{background:var(--primary-dark)}
+
+    .button.secondary{
+      background:#fff;
+      color:var(--primary);
+      border:1px solid #bfdbfe;
+    }
+
+    /* NEWSLETTER */
+    .newsletter{
+      padding:65px 0;
+    }
+
+    .newsletter-box{
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:38px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:30px;
+    }
+
+    .newsletter-box h2{
+      font-size:29px;
+      line-height:1.2;
+      margin-bottom:7px;
+    }
+
+    .newsletter-box p{
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .newsletter-form{
+      display:flex;
+      gap:8px;
+      min-width:430px;
+    }
+
+    .newsletter-form input{
+      flex:1;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:12px 13px;
+      outline:none;
+    }
+
+    /* FOOTER */
+    footer{
+      background:#0b1120;
+      color:#fff;
+      padding:55px 0 25px;
+    }
+
+    .footer-grid{
+      display:grid;
+      grid-template-columns:1.5fr repeat(3,1fr);
+      gap:40px;
+      padding-bottom:35px;
+      border-bottom:1px solid #1e293b;
+    }
+
+    .footer-brand p{
+      color:#94a3b8;
+      max-width:300px;
+      margin-top:10px;
+      font-size:13px;
+    }
+
+    footer h4{
+      font-size:13px;
+      margin-bottom:13px;
+    }
+
+    footer ul{
+      list-style:none;
+      display:grid;
+      gap:8px;
+    }
+
+    footer li,footer a{
+      color:#94a3b8;
+      font-size:12px;
+    }
+
+    footer a:hover{color:#fff}
+
+    .copyright{
+      padding-top:22px;
+      color:#64748b;
+      font-size:11px;
+      display:flex;
+      justify-content:space-between;
+      gap:15px;
+    }
+
+    /* MOBILE MENU */
+    .mobile-menu{
+      display:none;
+      padding:15px 18px 20px;
+      border-top:1px solid var(--border);
+      background:#fff;
+    }
+
+    .mobile-menu.open{display:grid;gap:5px}
+
+    .mobile-menu a{
+      padding:10px 0;
+      font-size:14px;
+      font-weight:700;
+    }
+
+    /* RESPONSIVE */
+    @media(max-width:950px){
+      .nav-links{display:none}
+      .menu-btn{display:block}
+
+      .category-grid{grid-template-columns:repeat(2,1fr)}
+      .research-grid,.pick-grid{grid-template-columns:1fr 1fr}
+      .business-grid{grid-template-columns:1fr 1fr}
+      .newsletter-box{display:block}
+      .newsletter-form{margin-top:22px}
+      .footer-grid{grid-template-columns:1.5fr 1fr 1fr}
+    }
+
+    @media(max-width:700px){
+      .container{width:min(var(--max),calc(100% - 26px))}
+      section{padding:55px 0}
+
+      .hero{
+        padding:65px 0 55px;
+      }
+
+      .hero h1{
+        font-size:42px;
+        letter-spacing:-2px;
+      }
+
+      .hero p{font-size:16px}
+
+      .search-wrap input{
+        padding-right:20px;
+        height:54px;
+      }
+
+      .search-btn{
+        position:static;
+        width:100%;
+        margin-top:8px;
+        height:48px;
+      }
+
+      .audience-grid,
+      .value-grid,
+      .research-grid,
+      .pick-grid,
+      .split-section,
+      .method-grid{
+        grid-template-columns:1fr;
+      }
+
+      .category-grid{grid-template-columns:1fr 1fr}
+
+      .section-head{
+        display:block;
+      }
+
+      .section-link{
+        display:inline-block;
+        margin-top:10px;
+      }
+
+      .savings-box,.business-inner,.newsletter-box{padding:27px}
+
+      .savings-grid{grid-template-columns:1fr}
+
+      .business-grid{grid-template-columns:1fr 1fr}
+
+      .newsletter-form{
+        min-width:0;
+        display:grid;
+        grid-template-columns:1fr;
+      }
+
+      .footer-grid{
+        grid-template-columns:1fr 1fr;
+        gap:28px;
+      }
+
+      .footer-brand{grid-column:1/-1}
+
+      .copyright{
+        display:block;
+      }
+
+      .copyright span{display:block;margin-top:6px}
+    }
+
+    @media(max-width:430px){
+      .category-grid,.business-grid{grid-template-columns:1fr}
+      .nav-search{display:none}
+      .logo{font-size:25px}
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="container nav">
+      <a href="#" class="logo">VHEOA</a>
+
+      <nav class="nav-links">
+        <a href="#career">Career</a>
+        <a href="#students">Students</a>
+        <a href="#office">Work & Office</a>
+        <a href="#research">Product Research</a>
+        <a href="#buying">Smart Buying</a>
+        <a href="#purchasing">Purchasing</a>
+      </nav>
+
+      <button class="nav-search" onclick="focusSearch()">⌕ Search</button>
+      <button class="menu-btn" onclick="toggleMenu()" aria-label="Open menu">☰</button>
+    </div>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#career" onclick="closeMenu()">Career</a>
+      <a href="#students" onclick="closeMenu()">Students</a>
+      <a href="#office" onclick="closeMenu()">Work & Office</a>
+      <a href="#research" onclick="closeMenu()">Product Research</a>
+      <a href="#buying" onclick="closeMenu()">Smart Buying</a>
+      <a href="#purchasing" onclick="closeMenu()">Purchasing</a>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container">
+        <div class="eyebrow">● Research • Ideas • Better Choices</div>
+
+        <h1>
+          Work Smarter.<br>
+          Study Better.<br>
+          <span>Choose Wisely.</span>
+        </h1>
+
+        <p>
+          Practical ideas, product research and purchasing insights
+          for students, professionals and organizations.
+        </p>
+
+        <div class="search-wrap">
+          <input id="siteSearch" type="search"
+                 placeholder="Search products, guides, career advice, purchasing tips..."
+                 aria-label="Search VHEOA">
+          <button class="search-btn" onclick="searchSite()">Search VHEOA</button>
+        </div>
+
+        <div class="quick-links">
+          <span>Explore:</span>
+          <a href="#students">Students</a>
+          <span>•</span>
+          <a href="#career">Professionals</a>
+          <span>•</span>
+          <a href="#purchasing">Businesses</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- AUDIENCE -->
+    <section class="audience">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Who is VHEOA for?</h2>
+            <p>Different people, different needs — one place for better decisions.</p>
+          </div>
+        </div>
+
+        <div class="audience-grid">
+          <article class="audience-card">
+            <div class="icon">🎓</div>
+            <h3>Students</h3>
+            <p>Study smarter, prepare for your career and spend wisely on the things you actually need.</p>
+            <a class="arrow" href="#students">Explore Students →</a>
+          </article>
+
+          <article class="audience-card">
+            <div class="icon">💼</div>
+            <h3>Professionals</h3>
+            <p>Improve productivity, develop your career and make better choices for your everyday work.</p>
+            <a class="arrow" href="#career">Explore Professionals →</a>
+          </article>
+
+          <article class="audience-card">
+            <div class="icon">🏢</div>
+            <h3>Organizations</h3>
+            <p>Compare products, understand purchasing costs and find ways to reduce unnecessary spending.</p>
+            <a class="arrow" href="#purchasing">Explore Purchasing →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHILOSOPHY -->
+    <section class="soft-section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Better decisions start with better information.</h2>
+            <p>VHEOA brings research, practical knowledge and value analysis together.</p>
+          </div>
+        </div>
+
+        <div class="value-grid">
+          <div class="value-item">
+            <div class="value-number">01 — RESEARCH</div>
+            <h3>We investigate.</h3>
+            <p>We compare products, prices, features, ratings and other useful information before making recommendations.</p>
+          </div>
+
+          <div class="value-item">
+            <div class="value-number">02 — LEARN</div>
+            <h3>We explain.</h3>
+            <p>We turn complicated topics into practical information that students and professionals can actually use.</p>
+          </div>
+
+          <div class="value-item">
+            <div class="value-number">03 — SAVE</div>
+            <h3>We find value.</h3>
+            <p>We look beyond the lowest price to identify economical choices and potential purchasing savings.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section id="office">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Explore VHEOA</h2>
+            <p>Research and practical resources organized around the decisions people make every day.</p>
+          </div>
+        </div>
+
+        <div class="category-grid">
+          <a class="category-card" href="#career">
+            <div class="emoji">📈</div>
+            <h3>Career & Growth</h3>
+            <p>Skills, professional development and workplace advice.</p>
+          </a>
+
+          <a class="category-card" href="#students">
+            <div class="emoji">🎓</div>
+            <h3>Student Life</h3>
+            <p>Study, college, career preparation and student essentials.</p>
+          </a>
+
+          <a class="category-card" href="#career">
+            <div class="emoji">⚡</div>
+            <h3>Productivity</h3>
+            <p>Better habits, organization and ways to work effectively.</p>
+          </a>
+
+          <a class="category-card" href="#office">
+            <div class="emoji">🖥️</div>
+            <h3>Office Essentials</h3>
+            <p>Products and equipment for everyday work.</p>
+          </a>
+
+          <a class="category-card" href="#research">
+            <div class="emoji">🔎</div>
+            <h3>Product Research</h3>
+            <p>Detailed comparisons, guides and product analysis.</p>
+          </a>
+
+          <a class="category-card" href="#buying">
+            <div class="emoji">🛒</div>
+            <h3>Smart Buying</h3>
+            <p>Learn how to identify genuine value before you buy.</p>
+          </a>
+
+          <a class="category-card" href="#purchasing">
+            <div class="emoji">📊</div>
+            <h3>Purchasing Intelligence</h3>
+            <p>Better purchasing decisions for offices and organizations.</p>
+          </a>
+
+          <a class="category-card" href="#buying">
+            <div class="emoji">💰</div>
+            <h3>Cost Savings</h3>
+            <p>Strategies, calculations and ideas for reducing expenses.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURED RESEARCH -->
+    <section id="research" class="soft-section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Featured Research</h2>
+            <p>Our latest comparisons, investigations and buying guides.</p>
+          </div>
+          <a href="#" class="section-link">View all research →</a>
+        </div>
+
+        <div class="research-grid">
+          <article class="article-card">
+            <div class="article-image">PRODUCT RESEARCH</div>
+            <div class="article-content">
+              <span class="tag">Product Research</span>
+              <h3>25 Office Chairs Compared: What Actually Offers Good Value?</h3>
+              <p>A structured look at price, features, ratings and long-term value.</p>
+              <a href="#" class="read-more">Read research →</a>
+            </div>
+          </article>
+
+          <article class="article-card">
+            <div class="article-image">PURCHASING</div>
+            <div class="article-content">
+              <span class="tag">Purchasing</span>
+              <h3>How Businesses Can Reduce Office Supply Costs</h3>
+              <p>Practical ways purchasing teams can reduce waste without simply buying the cheapest option.</p>
+              <a href="#" class="read-more">Read guide →</a>
+            </div>
+          </article>
+
+          <article class="article-card">
+            <div class="article-image">SMART BUYING</div>
+            <div class="article-content">
+              <span class="tag">Smart Buying</span>
+              <h3>$20 vs $50 Laptop Bags: Does Paying More Get You More?</h3>
+              <p>We look at durability, features, usability and cost-per-year.</p>
+              <a href="#" class="read-more">See comparison →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- BEST VALUE -->
+    <section class="picks" id="buying">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>VHEOA Best Value Picks</h2>
+            <p>Products selected using a broader view of value — not price alone.</p>
+          </div>
+          <a href="#" class="section-link">See all picks →</a>
+        </div>
+
+        <div class="pick-grid">
+          <article class="pick-card">
+            <div class="pick-label">Best Value • Students</div>
+            <h3>Example Notebook</h3>
+            <div class="score"><strong>9.1</strong><span>/ 10 VHEOA Value Score</span></div>
+            <p>A placeholder product card for the future product database.</p>
+            <a href="#" class="arrow">See analysis →</a>
+          </article>
+
+          <article class="pick-card">
+            <div class="pick-label">Best Value • Professionals</div>
+            <h3>Example Keyboard</h3>
+            <div class="score"><strong>8.8</strong><span>/ 10 VHEOA Value Score</span></div>
+            <p>A placeholder product card for the future product database.</p>
+            <a href="#" class="arrow">See analysis →</a>
+          </article>
+
+          <article class="pick-card">
+            <div class="pick-label">Best Value • Office</div>
+            <h3>Example Laptop Bag</h3>
+            <div class="score"><strong>9.0</strong><span>/ 10 VHEOA Value Score</span></div>
+            <p>A placeholder product card for the future product database.</p>
+            <a href="#" class="arrow">See analysis →</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SAVINGS -->
+    <section>
+      <div class="container">
+        <div class="savings-box">
+          <div class="section-head">
+            <div>
+              <h2>Could you be spending too much?</h2>
+              <p>Small purchasing decisions add up. Start understanding the real cost of what you buy.</p>
+            </div>
+          </div>
+
+          <div class="savings-grid">
+            <a href="#" class="saving-card">
+              <h3>Office Supply Savings</h3>
+              <p>Estimate how much your organization could potentially save.</p>
+              <span class="arrow">Calculate →</span>
+            </a>
+
+            <a href="#" class="saving-card">
+              <h3>Cost Per Use</h3>
+              <p>See whether the cheaper product is really cheaper over time.</p>
+              <span class="arrow">Calculate →</span>
+            </a>
+
+            <a href="#" class="saving-card">
+              <h3>Bulk Purchase Savings</h3>
+              <p>Compare quantities and understand the impact of unit pricing.</p>
+              <span class="arrow">Calculate →</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LATEST -->
+    <section class="soft-section">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <h2>Latest from VHEOA</h2>
+            <p>Fresh articles, comparisons and practical ideas.</p>
+          </div>
+          <a href="#" class="section-link">View all articles →</a>
+        </div>
+
+        <div class="filters">
+          <button class="filter active">All</button>
+          <button class="filter">Career</button>
+          <button class="filter">Students</button>
+          <button class="filter">Office</button>
+          <button class="filter">Products</button>
+          <button class="filter">Purchasing</button>
+        </div>
+
+        <div class="research-grid">
+          <article class="article-card">
+            <div class="article-image">CAREER</div>
+            <div class="article-content">
+              <span class="tag">Career</span>
+              <h3>5 Professional Habits Worth Developing Early</h3>
+              <p>Simple habits that can improve how you work and communicate.</p>
+              <a href="#" class="read-more">Read article →</a>
+            </div>
+          </article>
+
+          <article class="article-card">
+            <div class="article-image">STUDENTS</div>
+            <div class="article-content">
+              <span class="tag">Students</span>
+              <h3>Essential Products for a Better Study Setup</h3>
+              <p>A practical framework for deciding what you really need.</p>
+              <a href="#" class="read-more">Read article →</a>
+            </div>
+          </article>
+
+          <article class="article-card">
+            <div class="article-image">PURCHASING</div>
+            <div class="article-content">
+              <span class="tag">Purchasing</span>
+              <h3>Cheap vs Economical: Why They Are Not the Same</h3>
+              <p>Purchase price is only one part of the cost equation.</p>
+              <a href="#" class="read-more">Read article →</a>
+            </div>
+          </article>
+
+          <article class="article-card">
+            <div class="article-image">PRODUCTIVITY</div>
+            <div class="article-content">
+              <span class="tag">Productivity</span>
+              <h3>How to Build a More Effective Workspace</h3>
+              <p>Small improvements can make everyday work easier.</p>
+              <a href="#" class="read-more">Read article →</a>
+            </div>
+          </article>
+
+          <article class="article-card">
+            <div class="article-image">PRODUCTS</div>
+            <div class="article-content">
+              <span class="tag">Products</span>
+              <h3>Are Expensive Office Supplies Actually Better?</h3>
+              <p>What price differences can — and cannot — tell you.</p>
+              <a href="#" class="read-more">Read article →</a>
+            </div>
+          </article>
+
+          <article class="article-card">
+            <div class="article-image">SMART BUYING</div>
+            <div class="article-content">
+              <span class="tag">Smart Buying</span>
+              <h3>How to Compare Products Without Getting Misled</h3>
+              <p>A simple framework for evaluating products objectively.</p>
+              <a href="#" class="read-more">Read article →</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CAREER + STUDENTS -->
+    <section>
+      <div class="container split-section">
+
+        <div class="feature-panel" id="career">
+          <h2>Grow Your Career</h2>
+          <p>Practical ideas for becoming more effective, productive and prepared.</p>
+
+          <div class="mini-list">
+            <a href="#">Skills worth developing <span>→</span></a>
+            <a href="#">Building better professional habits <span>→</span></a>
+            <a href="#">Productivity at work <span>→</span></a>
+            <a href="#">Preparing for your first job <span>→</span></a>
+          </div>
+        </div>
+
+        <div class="feature-panel" id="students">
+          <h2>For Students</h2>
+          <p>Study, organize, prepare for your career and spend wisely.</p>
+
+          <div class="mini-list">
+            <a href="#">Study essentials <span>→</span></a>
+            <a href="#">College essentials <span>→</span></a>
+            <a href="#">Books & learning <span>→</span></a>
+            <a href="#">Career preparation <span>→</span></a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BUSINESS PURCHASING -->
+    <section class="business" id="purchasing">
+      <div class="container">
+        <div class="business-inner">
+          <h2>Smarter Purchasing for Organizations</h2>
+          <p>
+            Reduce unnecessary spending without simply buying inferior products.
+            VHEOA research can help purchasing teams understand price, value,
+            product alternatives and total cost.
+          </p>
+
+          <div class="business-grid">
+            <div class="business-card">
+              <h3>Product Comparisons</h3>
+              <p>Compare price, quality and value.</p>
+            </div>
+
+            <div class="business-card">
+              <h3>Cost Analysis</h3>
+              <p>Understand the real cost of purchasing decisions.</p>
+            </div>
+
+            <div class="business-card">
+              <h3>Procurement Guides</h3>
+              <p>Improve purchasing processes and decisions.</p>
+            </div>
+
+            <div class="business-card">
+              <h3>Savings Calculators</h3>
+              <p>Estimate potential purchasing savings.</p>
+            </div>
+          </div>
+
+          <div style="margin-top:25px">
+            <a class="button" href="#">Explore Purchasing Intelligence →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- METHODOLOGY -->
+    <section>
+      <div class="container method-grid">
+        <div class="method-copy">
+          <h2>How we evaluate products.</h2>
+          <p>
+            We don't want a product recommendation to be based only on popularity
+            or the lowest price. VHEOA will evaluate products using a consistent
+            research framework.
+          </p>
+
+          <div class="method-factors">
+            <div class="factor">💰 Price & Value</div>
+            <div class="factor">✓ Quality</div>
+            <div class="factor">⚙ Features</div>
+            <div class="factor">🛡 Reliability</div>
+            <div class="factor">★ User Feedback</div>
+            <div class="factor">🔧 Warranty & Support</div>
+          </div>
+
+          <div style="margin-top:22px">
+            <a class="button secondary" href="#">See Our Methodology →</a>
+          </div>
+        </div>
+
+        <div class="score-box">
+          <small>EXAMPLE VHEOA VALUE SCORE</small>
+          <div class="big-score">8.7</div>
+          <strong>out of 10</strong>
+          <p style="color:#64748b;font-size:13px;margin-top:10px">
+            A future VHEOA product score based on our research methodology.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- LINKEDIN -->
+    <section class="linkedin">
+      <div class="container">
+        <h2>Follow VHEOA on LinkedIn</h2>
+        <p>
+          Practical ideas about careers, productivity, products and smarter
+          purchasing — published regularly for students and professionals.
+        </p>
+        <!-- Replace # with the VHEOA LinkedIn URL when created -->
+        <a class="button" href="#" target="_blank" rel="noopener">Follow VHEOA →</a>
+      </div>
+    </section>
+
+    <!-- NEWSLETTER -->
+    <section class="newsletter">
+      <div class="container">
+        <div class="newsletter-box">
+          <div>
+            <h2>The VHEOA Brief</h2>
+            <p>Useful research, practical ideas and better buying decisions — delivered occasionally.</p>
+          </div>
+
+          <form class="newsletter-form" onsubmit="subscribe(event)">
+            <input type="email" required placeholder="Your email address" aria-label="Email address">
+            <button class="button" type="submit">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+
+        <div class="footer-brand">
+          <div class="logo">VHEOA</div>
+          <p>Work smarter. Study better. Choose wisely.</p>
+        </div>
+
+        <div>
+          <h4>Explore</h4>
+          <ul>
+            <li><a href="#career">Career</a></li>
+            <li><a href="#students">Students</a></li>
+            <li><a href="#office">Work & Office</a></li>
+            <li><a href="#research">Product Research</a></li>
+            <li><a href="#buying">Smart Buying</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="#">Buying Guides</a></li>
+            <li><a href="#">Comparisons</a></li>
+            <li><a href="#">Calculators</a></li>
+            <li><a href="#">Value Score</a></li>
+            <li><a href="#">Methodology</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>VHEOA</h4>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Editorial Policy</a></li>
+            <li><a href="#">Affiliate Disclosure</a></li>
+            <li><a href="#">Privacy & Terms</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="copyright">
+        <span>© 2026 VHEOA. All rights reserved.</span>
+        <span>Research • Learn • Save</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function focusSearch(){
+      document.getElementById('siteSearch').focus();
+      window.scrollTo({
+        top: document.querySelector('.hero').offsetTop - 80,
+        behavior: 'smooth'
+      });
+    }
+
+    function searchSite(){
+      const query = document.getElementById('siteSearch').value.trim();
+
+      if(!query){
+        focusSearch();
+        return;
+      }
+
+      /*
+        Replace this later with your actual search page.
+
+        Example:
+        window.location.href =
+          '/search.html?q=' + encodeURIComponent(query);
+      */
+
+      alert('Search is ready for integration. Query: ' + query);
+    }
+
+    function toggleMenu(){
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+
+    function closeMenu(){
+      document.getElementById('mobileMenu').classList.remove('open');
+    }
+
+    function subscribe(event){
+      event.preventDefault();
+
+      /*
+        Later connect this form to:
+        - Mailchimp
+        - ConvertKit
+        - Beehiiv
+        - Buttondown
+        - your own backend
+      */
+
+      alert('Newsletter form is ready for your email-service integration.');
+    }
+
+    // Simple category filter visual behavior.
+    document.querySelectorAll('.filter').forEach(button => {
+      button.addEventListener('click', function(){
+        document.querySelectorAll('.filter').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>
