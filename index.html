@@ -655,24 +655,12 @@
      ============================================================ */
 
   const SUPABASE_URL = 'https://lfuwtyvdvxxyyeulbuqa.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmdXd0eXZkdnh4eXlldWxidXFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY4NjgwNDgsImV4cCI6MjEwMjQ0NDA0OH0.pVhMixa3JkRh2j1a8vm5x7w1R3GTgkhh43CHq2YYpgo';
 
-  const SUPABASE_ANON_KEY =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmdXd0eXZkdnh4eXlldWxidXFhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY4NjgwNDgsImV4cCI6MjEwMjQ0NDA0OH0.pVhMixa3JkRh2j1a8vm5x7w1R3GTgkhh43CHq2YYpgo';
-
-  const VHEOA_LINKEDIN_URL = 'YOUR_VHEOA_LINKEDIN_URL';
-
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
-
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   /* ============================================================
      VHEOA CONTENT CATEGORIES
-
-     These are taxonomy/navigation definitions, NOT articles.
-     Article cards themselves always come from Supabase.
      ============================================================ */
 
   const categories = [
@@ -688,68 +676,37 @@
     { id: 'product-comparisons', name: 'Product Comparisons', icon: '🔎', tag: 'product-comparisons' }
   ];
 
-
   /* ============================================================
      SAFE HTML HELPERS
      ============================================================ */
 
   function escapeHTML(value) {
-    return String(value ?? '')
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+    return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
   }
 
   function escapeAttribute(value) {
     return escapeHTML(value);
   }
 
-
   /* ============================================================
      SPA PAGE TEMPLATES
      ============================================================ */
 
   const pages = {
-
     home: `
       <div class="container">
-
         <div class="hero">
           <h1>Better choices for <span>everyday life.</span></h1>
-
-          <p>
-            Practical research, product comparisons and money-saving ideas
-            for students, professionals and organizations.
-          </p>
-
+          <p>Practical research, product comparisons and money-saving ideas for students, professionals and organizations.</p>
           <div class="search-wrapper">
-            <input
-              type="search"
-              id="searchInput"
-              placeholder="Search articles…"
-              aria-label="Search articles"
-              autocomplete="off"
-            />
+            <input type="search" id="searchInput" placeholder="Search articles…" aria-label="Search articles" autocomplete="off" />
           </div>
         </div>
 
-        <h2 class="section-title">
-          Explore by Category
-          <small>research for study, work & everyday life</small>
-        </h2>
-
+        <h2 class="section-title">Explore by Category <small>research for study, work & everyday life</small></h2>
         <div class="category-grid">
           ${categories.map(cat => `
-            <div
-              class="category-card"
-              data-category-id="${escapeAttribute(cat.id)}"
-              onclick="navigateToCategory('${escapeAttribute(cat.id)}')"
-              role="button"
-              tabindex="0"
-              onkeydown="if(event.key==='Enter'||event.key===' ') navigateToCategory('${escapeAttribute(cat.id)}')"
-            >
+            <div class="category-card" data-category-id="${escapeAttribute(cat.id)}" onclick="navigateToCategory('${escapeAttribute(cat.id)}')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ') navigateToCategory('${escapeAttribute(cat.id)}')">
               <span class="icon">${cat.icon}</span>
               <div class="name">${escapeHTML(cat.name)}</div>
               <div class="count" id="count-${escapeAttribute(cat.id)}">Loading…</div>
@@ -757,138 +714,71 @@
           `).join('')}
         </div>
 
-        <h2 class="section-title">
-          Featured Articles
-          <small>editorial picks</small>
-        </h2>
-
+        <h2 class="section-title">Featured Articles <small>editorial picks</small></h2>
         <div class="card-grid" id="featuredGrid">
           <div class="loading-spinner">Loading featured articles…</div>
         </div>
 
-        <h2 class="section-title">
-          Latest Articles
-          <small>newly published</small>
-        </h2>
-
+        <h2 class="section-title">Latest Articles <small>newly published</small></h2>
         <div class="card-grid" id="latestGrid">
           <div class="loading-spinner">Loading latest articles…</div>
         </div>
-
       </div>
     `,
 
     category: `
       <div class="container">
-
         <div class="breadcrumb">
-          <a href="#" onclick="navigateTo('home'); return false;">← Home</a>
-          /
-          <span id="categoryName">Category</span>
+          <a href="#" onclick="navigateTo('home'); return false;">← Home</a> / <span id="categoryName">Category</span>
         </div>
-
         <h2 class="section-title" id="categoryTitle">Category</h2>
-
-        <p
-          style="color: var(--muted); margin-bottom: 20px;"
-          id="categoryDescription"
-        >
-          Explore articles in this category.
-        </p>
-
+        <p style="color: var(--muted); margin-bottom: 20px;" id="categoryDescription">Explore articles in this category.</p>
         <div class="card-grid" id="categoryGrid">
           <div class="loading-spinner">Loading articles…</div>
         </div>
-
-        <a
-          href="#"
-          class="back-home"
-          onclick="navigateTo('home'); return false;"
-        >
-          ← Back to Home
-        </a>
-
+        <a href="#" class="back-home" onclick="navigateTo('home'); return false;">← Back to Home</a>
       </div>
     `,
 
     article: `
       <div class="container article-page">
-
         <div class="breadcrumb">
-          <a href="#" onclick="navigateTo('home'); return false;">← Home</a>
-          /
-          <span id="articleCategory">Category</span>
-          /
-          <span id="articleBreadcrumbTitle">Article</span>
+          <a href="#" onclick="navigateTo('home'); return false;">← Home</a> / <span id="articleCategory">Category</span> / <span id="articleBreadcrumbTitle">Article</span>
         </div>
-
         <div id="articleContent">
           <div class="loading-spinner">Loading article…</div>
         </div>
-
-        <a
-          href="#"
-          class="back-home"
-          onclick="navigateTo('home'); return false;"
-        >
-          ← Back to Home
-        </a>
-
+        <a href="#" class="back-home" onclick="navigateTo('home'); return false;">← Back to Home</a>
       </div>
     `,
 
     about: `
       <div class="container page-content">
         <h2>About VHEOA</h2>
-
-        <p>
-          VHEOA helps students, professionals and organizations make better
-          decisions through practical research, product comparisons and
-          value-focused analysis.
-        </p>
-
-        <p>
-          We look at the real-world trade-offs behind everyday purchasing
-          decisions — including quality, usefulness, price, durability and
-          total value.
-        </p>
-
-        <p>
-          Our goal is simple:
-          <strong>Research → Compare → Understand → Decide.</strong>
-        </p>
+        <p>VHEOA helps students, professionals and organizations make better decisions through practical research, product comparisons and value-focused analysis.</p>
+        <p>We look at the real-world trade-offs behind everyday purchasing decisions — including quality, usefulness, price, durability and total value.</p>
+        <p>Our goal is simple: <strong>Research → Compare → Understand → Decide.</strong></p>
       </div>
     `,
 
     contact: `
       <div class="container page-content">
         <h2>Contact VHEOA</h2>
-
-        <p>
-          Have a product suggestion, research topic or question?
-          We'd love to hear from you.
-        </p>
-
-        <p>
-          Contact details will be published here as the VHEOA platform
-          develops.
-        </p>
+        <p>Have a product suggestion, research topic or question? We'd love to hear from you.</p>
+        <p>Contact details will be published here as the VHEOA platform develops.</p>
       </div>
     `
   };
 
-
   let currentPage = 'home';
   let currentCategoryId = null;
   let currentArticleSlug = null;
-
 
   /* ============================================================
      ROUTING
      ============================================================ */
 
   function navigateTo(pageKey, updateHash = true) {
-
     if (!pages[pageKey]) return;
 
     currentPage = pageKey;
@@ -896,18 +786,15 @@
 
     if (pageKey === 'home') {
       currentArticleSlug = null;
-
       if (updateHash) {
         history.pushState(null, '', window.location.pathname + window.location.search);
       }
     }
 
     const main = document.getElementById('main-content');
-
     if (!main) return;
 
     main.innerHTML = pages[pageKey];
-
     updateActiveNavigation(pageKey);
 
     if (pageKey === 'home') {
@@ -920,13 +807,8 @@
     closeMobileMenu();
   }
 
-
   function navigateToCategory(categoryId, updateHash = true) {
-
-    const category = categories.find(
-      c => c.id === categoryId
-    );
-
+    const category = categories.find(c => c.id === categoryId);
     if (!category) return;
 
     currentCategoryId = categoryId;
@@ -938,30 +820,19 @@
     }
 
     const main = document.getElementById('main-content');
-
     if (!main) return;
 
     main.innerHTML = pages.category;
-
-    document.getElementById('categoryName').textContent =
-      category.name;
-
-    document.getElementById('categoryTitle').textContent =
-      `${category.icon} ${category.name}`;
-
-    document.getElementById('categoryDescription').textContent =
-      `Articles tagged with "${category.name}".`;
+    document.getElementById('categoryName').textContent = category.name;
+    document.getElementById('categoryTitle').textContent = `${category.icon} ${category.name}`;
+    document.getElementById('categoryDescription').textContent = `Articles tagged with "${category.name}".`;
 
     updateActiveNavigation('home');
-
     loadCategoryArticles(category.tag);
-
     closeMobileMenu();
   }
 
-
   function navigateToArticle(slug, updateHash = true) {
-
     if (!slug) return;
 
     currentPage = 'article';
@@ -969,93 +840,52 @@
     currentArticleSlug = slug;
 
     if (updateHash) {
-      window.location.hash =
-        `article-${encodeURIComponent(slug)}`;
+      window.location.hash = `article-${encodeURIComponent(slug)}`;
     }
 
     const main = document.getElementById('main-content');
-
     if (!main) return;
 
     main.innerHTML = pages.article;
-
     updateActiveNavigation('home');
-
     closeMobileMenu();
-
     loadArticle(slug);
   }
 
-
   function updateActiveNavigation(pageKey) {
-
-    document
-      .querySelectorAll('.nav-links a')
-      .forEach(link => {
-
-        link.classList.toggle(
-          'active',
-          link.dataset.page === pageKey
-        );
-
-      });
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.classList.toggle('active', link.dataset.page === pageKey);
+    });
   }
-
 
   function toggleMobileMenu() {
-    document
-      .getElementById('navLinks')
-      ?.classList.toggle('open');
+    document.getElementById('navLinks')?.classList.toggle('open');
   }
-
 
   function closeMobileMenu() {
-    document
-      .getElementById('navLinks')
-      ?.classList.remove('open');
+    document.getElementById('navLinks')?.classList.remove('open');
   }
-
 
   /* ============================================================
      HASH ROUTING
      ============================================================ */
 
   function handleHashChange() {
-
-    const rawHash =
-      window.location.hash.replace(/^#/, '');
+    const rawHash = window.location.hash.replace(/^#/, '');
 
     if (rawHash.startsWith('article-')) {
-
-      const slug =
-        decodeURIComponent(
-          rawHash.substring('article-'.length)
-        );
-
-      if (
-        currentPage !== 'article' ||
-        currentArticleSlug !== slug
-      ) {
+      const slug = decodeURIComponent(rawHash.substring('article-'.length));
+      if (currentPage !== 'article' || currentArticleSlug !== slug) {
         navigateToArticle(slug, false);
       }
-
       return;
     }
 
     if (rawHash.startsWith('category-')) {
-
-      const categoryId =
-        decodeURIComponent(
-          rawHash.substring('category-'.length)
-        );
-
-      if (
-        currentPage !== 'category' ||
-        currentCategoryId !== categoryId
-      ) {
+      const categoryId = decodeURIComponent(rawHash.substring('category-'.length));
+      if (currentPage !== 'category' || currentCategoryId !== categoryId) {
         navigateToCategory(categoryId, false);
       }
-
       return;
     }
 
@@ -1064,1178 +894,328 @@
     }
   }
 
-
-  window.addEventListener(
-    'hashchange',
-    handleHashChange
-  );
-
+  window.addEventListener('hashchange', handleHashChange);
 
   /* ============================================================
-     IP GEOLOCATION
-
-     Normalizes IP country codes to the values used by the
-     affiliate_links table:
-       US -> USA
-       GB -> UK
-       IN -> IN
-       IT -> IT
+     IP GEOLOCATION (for affiliate links)
      ============================================================ */
 
   const COUNTRY_CACHE_MS = 60 * 60 * 1000;
 
-  const affiliateCountryMap = {
-    US: 'USA',
-    GB: 'UK',
-    IN: 'IN',
-    IT: 'IT'
-  };
-
-
-  function normalizeAffiliateCountry(code) {
-
-    if (!code) return 'default';
-
-    const normalized =
-      String(code).trim().toUpperCase();
-
-    return affiliateCountryMap[normalized] ||
-           normalized;
-  }
-
-
   async function getCountryCode() {
-
     try {
-
-      const cached =
-        localStorage.getItem('userCountry');
-
-      const cachedTime =
-        localStorage.getItem('userCountryTimestamp');
-
+      const cached = localStorage.getItem('userCountry');
+      const cachedTime = localStorage.getItem('userCountryTimestamp');
       if (cached && cachedTime) {
-
-        const age =
-          Date.now() -
-          parseInt(cachedTime, 10);
-
-        if (age < COUNTRY_CACHE_MS) {
-          return cached;
-        }
+        const age = Date.now() - parseInt(cachedTime, 10);
+        if (age < COUNTRY_CACHE_MS) return cached;
       }
-
     } catch (_) {}
 
-
     const apis = [
-
-      {
-        url: 'https://ipapi.co/json/',
-        key: 'country_code'
-      },
-
-      {
-        url: 'https://ipinfo.io/json',
-        key: 'country'
-      },
-
-      {
-        url: 'https://api.country.is/',
-        key: 'country'
-      }
-
+      { url: 'https://ipapi.co/json/', key: 'country_code' },
+      { url: 'https://ipinfo.io/json', key: 'country' },
+      { url: 'https://api.country.is/', key: 'country' }
     ];
 
-
     for (const api of apis) {
-
       try {
-
-        const response =
-          await fetch(api.url, {
-            method: 'GET',
-            headers: {
-              'Accept': 'application/json'
-            },
-            cache: 'no-store'
-          });
-
-        if (!response.ok) {
-          continue;
-        }
-
-        const data =
-          await response.json();
-
-        const rawCountry =
-          data?.[api.key];
-
-        if (
-          rawCountry &&
-          typeof rawCountry === 'string' &&
-          rawCountry.trim().length === 2
-        ) {
-
-          const iso =
-            rawCountry.trim().toUpperCase();
-
-          const affiliateCountry =
-            normalizeAffiliateCountry(iso);
-
+        const res = await fetch(api.url, { method: 'GET', headers: { 'Accept': 'application/json' }, cache: 'no-store' });
+        if (!res.ok) continue;
+        const data = await res.json();
+        const rawCountry = data?.[api.key];
+        if (rawCountry && typeof rawCountry === 'string' && rawCountry.trim().length === 2) {
+          const iso = rawCountry.trim().toUpperCase();
           try {
-
-            localStorage.setItem(
-              'userCountry',
-              affiliateCountry
-            );
-
-            localStorage.setItem(
-              'userCountryTimestamp',
-              String(Date.now())
-            );
-
+            localStorage.setItem('userCountry', iso);
+            localStorage.setItem('userCountryTimestamp', String(Date.now()));
           } catch (_) {}
-
-          console.log(
-            '[VHEOA] IP country:',
-            iso,
-            '→ affiliate country:',
-            affiliateCountry
-          );
-
-          return affiliateCountry;
+          return iso;
         }
-
-      } catch (error) {
-
-        console.warn(
-          '[VHEOA] Country API failed:',
-          api.url
-        );
-
-      }
+      } catch (_) { continue; }
     }
-
-
-    console.warn(
-      '[VHEOA] Country detection failed. Using default affiliate link.'
-    );
 
     return 'default';
   }
 
-
-  /* ============================================================
-     VISITOR ID
-     ============================================================ */
-
   function getVisitorId() {
-
     try {
-
-      let visitorId =
-        localStorage.getItem('visitorId');
-
+      let visitorId = localStorage.getItem('visitorId');
       if (!visitorId) {
-
-        visitorId =
-          window.crypto?.randomUUID
-            ? window.crypto.randomUUID()
-            : 'visitor-' +
-              Date.now() +
-              '-' +
-              Math.random()
-                .toString(36)
-                .substring(2, 11);
-
-        localStorage.setItem(
-          'visitorId',
-          visitorId
-        );
+        visitorId = window.crypto?.randomUUID ? window.crypto.randomUUID() : 'visitor-' + Date.now() + '-' + Math.random().toString(36).substring(2, 11);
+        localStorage.setItem('visitorId', visitorId);
       }
-
       return visitorId;
-
     } catch (_) {
-
-      return 'visitor-' +
-        Date.now() +
-        '-' +
-        Math.random()
-          .toString(36)
-          .substring(2, 11);
-
+      return 'visitor-' + Date.now() + '-' + Math.random().toString(36).substring(2, 11);
     }
   }
 
-
   /* ============================================================
      ARTICLE CARD RENDERING
-
-     Cards are created ONLY from Supabase article records.
-     There are no hard-coded articles.
      ============================================================ */
 
   function createCardHTML(article) {
+    const title = escapeHTML(article.title || 'Untitled Article');
+    const description = escapeHTML(article.description || 'Read the full VHEOA analysis.');
+    const tag = escapeHTML(article.tag || 'VHEOA');
+    const slug = String(article.slug || '');
+    const imageUrl = article.image_url ? escapeAttribute(article.image_url) : '';
 
-    const id =
-      escapeAttribute(article.id);
-
-    const title =
-      escapeHTML(article.title || 'Untitled Article');
-
-    const description =
-      escapeHTML(
-        article.description ||
-        'Read the full VHEOA analysis.'
-      );
-
-    const tag =
-      escapeHTML(article.tag || 'VHEOA');
-
-    const slug =
-      String(article.slug || '');
-
-    const imageUrl =
-      article.image_url
-        ? escapeAttribute(article.image_url)
-        : '';
-
-    const imageHTML =
-      imageUrl
-        ? `<img
-             src="${imageUrl}"
-             alt="${title}"
-             loading="lazy"
-             onerror="this.parentElement.classList.add('image-error'); this.style.display='none';"
-           />`
-        : `<div
-             style="height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);"
-           >
-             VHEOA
-           </div>`;
-
+    const imageHTML = imageUrl ? `<img src="${imageUrl}" alt="${title}" loading="lazy" onerror="this.parentElement.classList.add('image-error'); this.style.display='none';" />` : `<div style="height:100%;display:flex;align-items:center;justify-content:center;color:var(--muted);">VHEOA</div>`;
 
     return `
-      <article
-        class="card"
-        data-article-id="${id}"
-        data-title="${escapeAttribute((article.title || '').toLowerCase())}"
-        data-tag="${escapeAttribute((article.tag || '').toLowerCase())}"
-        onclick="navigateToArticle(${JSON.stringify(slug)})"
-        role="link"
-        tabindex="0"
-        onkeydown="if(event.key==='Enter'||event.key===' ') navigateToArticle(${JSON.stringify(slug)})"
-      >
-
-        <div class="card-image">
-          ${imageHTML}
-        </div>
-
+      <article class="card" data-title="${escapeAttribute((article.title || '').toLowerCase())}" data-tag="${escapeAttribute((article.tag || '').toLowerCase())}" onclick="navigateToArticle('${escapeAttribute(slug)}')" role="link" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' ') navigateToArticle('${escapeAttribute(slug)}')">
+        <div class="card-image">${imageHTML}</div>
         <div class="card-body">
-
-          <span class="tag">
-            ${tag}
-          </span>
-
-          <h3>
-            ${title}
-          </h3>
-
-          <p>
-            ${description}
-          </p>
-
-          <span class="view-more">
-            Read Article →
-          </span>
-
+          <span class="tag">${tag}</span>
+          <h3>${title}</h3>
+          <p>${description}</p>
+          <span class="view-more">Read Article →</span>
         </div>
-
       </article>
     `;
   }
 
-
   /* ============================================================
-     CATEGORY COUNTS
-
-     Categories are VHEOA taxonomy.
-     Counts come from Supabase articles.tag.
+     LOAD CATEGORY COUNTS
      ============================================================ */
 
   async function loadCategoryCounts() {
-
     try {
-
-      const {
-        data,
-        error
-      } = await supabaseClient
-        .from('articles')
-        .select('tag');
-
-      if (error) {
-        console.error(
-          '[VHEOA] Category count error:',
-          error
-        );
-        return;
-      }
-
+      const { data, error } = await supabaseClient.from('articles').select('tag');
+      if (error) return;
       const counts = {};
-
-      (data || []).forEach(article => {
-
-        if (!article.tag) return;
-
-        counts[article.tag] =
-          (counts[article.tag] || 0) + 1;
-
+      (data || []).forEach(a => { if (a.tag) counts[a.tag] = (counts[a.tag] || 0) + 1; });
+      categories.forEach(cat => {
+        const el = document.getElementById(`count-${cat.id}`);
+        if (el) {
+          const count = counts[cat.tag] || 0;
+          el.textContent = `${count} article${count === 1 ? '' : 's'}`;
+        }
       });
-
-
-      categories.forEach(category => {
-
-        const element =
-          document.getElementById(
-            `count-${category.id}`
-          );
-
-        if (!element) return;
-
-        const count =
-          counts[category.tag] || 0;
-
-        element.textContent =
-          `${count} article${count === 1 ? '' : 's'}`;
-
-      });
-
-    } catch (error) {
-
-      console.error(
-        '[VHEOA] Category count exception:',
-        error
-      );
-    }
+    } catch (_) {}
   }
 
-
   /* ============================================================
-     LOAD FEATURED ARTICLES
-
-     IMPORTANT:
-     Only Supabase articles are displayed.
-     No fallback fake articles.
+     LOAD ARTICLES (Featured, Latest, Category)
      ============================================================ */
 
   async function loadFeaturedArticles() {
-
-    const grid =
-      document.getElementById('featuredGrid');
-
+    const grid = document.getElementById('featuredGrid');
     if (!grid) return;
-
-    grid.innerHTML =
-      '<div class="loading-spinner">Loading featured articles…</div>';
+    grid.innerHTML = '<div class="loading-spinner">Loading featured articles…</div>';
 
     try {
-
-      const {
-        data: articles,
-        error
-      } = await supabaseClient
-        .from('articles')
-        .select('*')
-        .eq('featured', true)
-        .order('created_at', {
-          ascending: false
-        })
-        .limit(4);
-
-
-      if (error) {
-
-        console.error(
-          '[VHEOA] Featured article query error:',
-          error
-        );
-
-        grid.innerHTML =
-          `<div class="empty-state">
-             Featured articles could not be loaded.
-           </div>`;
-
+      const { data: articles, error } = await supabaseClient.from('articles').select('*').eq('featured', true).order('created_at', { ascending: false }).limit(4);
+      if (error || !articles || articles.length === 0) {
+        grid.innerHTML = `<div class="empty-state">No featured articles yet.</div>`;
         return;
       }
-
-
-      if (!articles || articles.length === 0) {
-
-        grid.innerHTML =
-          `<div class="empty-state">
-             No featured articles yet.
-           </div>`;
-
-        return;
-      }
-
-
-      grid.innerHTML =
-        articles.map(createCardHTML).join('');
-
-    } catch (error) {
-
-      console.error(
-        '[VHEOA] Featured article exception:',
-        error
-      );
-
-      grid.innerHTML =
-        `<div class="empty-state">
-           Featured articles could not be loaded.
-         </div>`;
+      grid.innerHTML = articles.map(createCardHTML).join('');
+    } catch (_) {
+      grid.innerHTML = `<div class="empty-state">Featured articles could not be loaded.</div>`;
     }
   }
-
-
-  /* ============================================================
-     LOAD LATEST ARTICLES
-
-     Only Supabase articles are displayed.
-     ============================================================ */
 
   async function loadLatestArticles() {
-
-    const grid =
-      document.getElementById('latestGrid');
-
+    const grid = document.getElementById('latestGrid');
     if (!grid) return;
-
-    grid.innerHTML =
-      '<div class="loading-spinner">Loading latest articles…</div>';
+    grid.innerHTML = '<div class="loading-spinner">Loading latest articles…</div>';
 
     try {
-
-      const {
-        data: articles,
-        error
-      } = await supabaseClient
-        .from('articles')
-        .select('*')
-        .order('created_at', {
-          ascending: false
-        })
-        .limit(6);
-
-
-      if (error) {
-
-        console.error(
-          '[VHEOA] Latest article query error:',
-          error
-        );
-
-        grid.innerHTML =
-          `<div class="empty-state">
-             Latest articles could not be loaded.
-           </div>`;
-
+      const { data: articles, error } = await supabaseClient.from('articles').select('*').order('created_at', { ascending: false }).limit(6);
+      if (error || !articles || articles.length === 0) {
+        grid.innerHTML = `<div class="empty-state">No articles published yet.</div>`;
         return;
       }
-
-
-      if (!articles || articles.length === 0) {
-
-        grid.innerHTML =
-          `<div class="empty-state">
-             No articles published yet.
-           </div>`;
-
-        return;
-      }
-
-
-      grid.innerHTML =
-        articles.map(createCardHTML).join('');
-
-    } catch (error) {
-
-      console.error(
-        '[VHEOA] Latest article exception:',
-        error
-      );
-
-      grid.innerHTML =
-        `<div class="empty-state">
-           Latest articles could not be loaded.
-         </div>`;
+      grid.innerHTML = articles.map(createCardHTML).join('');
+    } catch (_) {
+      grid.innerHTML = `<div class="empty-state">Latest articles could not be loaded.</div>`;
     }
   }
-
-
-  /* ============================================================
-     LOAD CATEGORY ARTICLES
-     ============================================================ */
 
   async function loadCategoryArticles(tag) {
-
-    const grid =
-      document.getElementById('categoryGrid');
-
+    const grid = document.getElementById('categoryGrid');
     if (!grid) return;
-
-    grid.innerHTML =
-      '<div class="loading-spinner">Loading articles…</div>';
+    grid.innerHTML = '<div class="loading-spinner">Loading articles…</div>';
 
     try {
-
-      const {
-        data: articles,
-        error
-      } = await supabaseClient
-        .from('articles')
-        .select('*')
-        .eq('tag', tag)
-        .order('created_at', {
-          ascending: false
-        });
-
-
-      if (error) {
-
-        console.error(
-          '[VHEOA] Category article query error:',
-          error
-        );
-
-        grid.innerHTML =
-          `<div class="empty-state">
-             Articles could not be loaded.
-           </div>`;
-
+      const { data: articles, error } = await supabaseClient.from('articles').select('*').eq('tag', tag).order('created_at', { ascending: false });
+      if (error || !articles || articles.length === 0) {
+        grid.innerHTML = `<div class="empty-state">No articles in this category yet.</div>`;
         return;
       }
-
-
-      if (!articles || articles.length === 0) {
-
-        grid.innerHTML =
-          `<div class="empty-state">
-             No articles in this category yet.
-           </div>`;
-
-        return;
-      }
-
-
-      grid.innerHTML =
-        articles.map(createCardHTML).join('');
-
-    } catch (error) {
-
-      console.error(
-        '[VHEOA] Category article exception:',
-        error
-      );
-
-      grid.innerHTML =
-        `<div class="empty-state">
-           Articles could not be loaded.
-         </div>`;
+      grid.innerHTML = articles.map(createCardHTML).join('');
+    } catch (_) {
+      grid.innerHTML = `<div class="empty-state">Articles could not be loaded.</div>`;
     }
   }
-
-
-  /* ============================================================
-     AFFILIATE LINK RESOLUTION
-
-     Looks up:
-       article_id
-       affiliate_key
-       country_code
-
-     Country-specific link wins over default.
-     ============================================================ */
-
-  async function rewriteDynamicLinks(articleId) {
-
-    const links =
-      document.querySelectorAll(
-        `.article-content[data-article-id="${CSS.escape(String(articleId))}"] .dynamic-link`
-      );
-
-    if (!links.length) return;
-
-    const country =
-      await getCountryCode();
-
-
-    try {
-
-      const {
-        data: affiliateLinks,
-        error
-      } = await supabaseClient
-        .from('affiliate_links')
-        .select(
-          'affiliate_key, link_url, country_code'
-        )
-        .eq('article_id', articleId)
-        .in(
-          'country_code',
-          [country, 'default']
-        );
-
-
-      if (error) {
-
-        console.error(
-          '[VHEOA] Affiliate link query error:',
-          error
-        );
-
-        links.forEach(link => {
-          link.classList.add('disabled');
-          link.title =
-            'Affiliate link unavailable';
-        });
-
-        return;
-      }
-
-
-      const linkMap = {};
-
-
-      /*
-       * Default links first.
-       */
-
-      (affiliateLinks || []).forEach(item => {
-
-        const key =
-          String(item.affiliate_key || '')
-            .trim()
-            .toLowerCase();
-
-        if (
-          key &&
-          item.country_code === 'default' &&
-          item.link_url
-        ) {
-          linkMap[key] = item.link_url;
-        }
-      });
-
-
-      /*
-       * Country-specific links overwrite defaults.
-       */
-
-      (affiliateLinks || []).forEach(item => {
-
-        const key =
-          String(item.affiliate_key || '')
-            .trim()
-            .toLowerCase();
-
-        if (
-          key &&
-          item.country_code === country &&
-          item.link_url
-        ) {
-          linkMap[key] = item.link_url;
-        }
-      });
-
-
-      links.forEach(link => {
-
-        const key =
-          String(
-            link.dataset.affiliateKey || ''
-          )
-            .trim()
-            .toLowerCase();
-
-        const url =
-          key ? linkMap[key] : null;
-
-
-        if (url) {
-
-          link.href = url;
-
-          link.classList.remove('disabled');
-
-          link.title = '';
-
-          link.removeEventListener(
-            'click',
-            trackClickHandler
-          );
-
-          link.addEventListener(
-            'click',
-            trackClickHandler
-          );
-
-          console.log(
-            '[VHEOA] Affiliate link assigned:',
-            key,
-            country,
-            url
-          );
-
-        } else {
-
-          link.classList.add('disabled');
-
-          link.removeAttribute('href');
-
-          link.title =
-            'No affiliate link available for your region';
-
-        }
-
-      });
-
-    } catch (error) {
-
-      console.error(
-        '[VHEOA] Affiliate link exception:',
-        error
-      );
-    }
-  }
-
-
-  /* ============================================================
-     AFFILIATE CLICK TRACKING
-
-     If click_logs is unavailable or blocked by RLS,
-     the affiliate click still opens.
-     ============================================================ */
-
-  async function trackClickHandler(event) {
-
-    event.preventDefault();
-
-    const link =
-      event.currentTarget;
-
-    const href =
-      link.href;
-
-    if (!href) return;
-
-    const affiliateKey =
-      link.dataset.affiliateKey || null;
-
-    const articleContent =
-      link.closest('.article-content');
-
-    const articleId =
-      articleContent?.dataset.articleId || null;
-
-    const country =
-      await getCountryCode();
-
-    const visitorId =
-      getVisitorId();
-
-
-    try {
-
-      const {
-        error
-      } = await supabaseClient
-        .from('click_logs')
-        .insert({
-          article_id: articleId || null,
-          affiliate_key: affiliateKey,
-          link_url: href,
-          country_code: country,
-          visitor_id: visitorId,
-          user_agent: navigator.userAgent
-        });
-
-      if (error) {
-
-        console.warn(
-          '[VHEOA] Click log insert failed:',
-          error
-        );
-      }
-
-    } catch (error) {
-
-      console.warn(
-        '[VHEOA] Click log exception:',
-        error
-      );
-    }
-
-
-    /*
-     * Always open the affiliate destination,
-     * even if analytics logging fails.
-     */
-
-    window.open(
-      href,
-      '_blank',
-      'noopener'
-    );
-  }
-
 
   /* ============================================================
      LOAD SINGLE ARTICLE
      ============================================================ */
 
   async function loadArticle(slug) {
-
-    const container =
-      document.getElementById('articleContent');
-
-    const categorySpan =
-      document.getElementById('articleCategory');
-
-    const breadcrumbTitle =
-      document.getElementById(
-        'articleBreadcrumbTitle'
-      );
-
+    const container = document.getElementById('articleContent');
+    const categorySpan = document.getElementById('articleCategory');
+    const breadcrumbTitle = document.getElementById('articleBreadcrumbTitle');
 
     if (!container) return;
-
-
-    container.innerHTML =
-      '<div class="loading-spinner">Loading article…</div>';
-
+    container.innerHTML = '<div class="loading-spinner">Loading article…</div>';
 
     try {
-
-      const {
-        data: article,
-        error
-      } = await supabaseClient
-        .from('articles')
-        .select('*')
-        .eq('slug', slug)
-        .single();
-
-
+      const { data: article, error } = await supabaseClient.from('articles').select('*').eq('slug', slug).single();
       if (error || !article) {
-
-        console.error(
-          '[VHEOA] Article query error:',
-          error
-        );
-
-        container.innerHTML =
-          `<div class="empty-state">
-             Article not found.
-           </div>`;
-
+        container.innerHTML = `<div class="empty-state">Article not found.</div>`;
         return;
       }
 
-
-      /*
-       * Update page metadata.
-       */
-
-      document.title =
-        `${article.title} — VHEOA`;
-
+      // Update metadata
+      document.title = `${article.title} — VHEOA`;
       if (categorySpan) {
-
-        const category =
-          categories.find(
-            c => c.tag === article.tag
-          );
-
-        categorySpan.textContent =
-          category
-            ? category.name
-            : (article.tag || 'VHEOA');
+        const category = categories.find(c => c.tag === article.tag);
+        categorySpan.textContent = category ? category.name : (article.tag || 'VHEOA');
       }
+      if (breadcrumbTitle) breadcrumbTitle.textContent = article.title || 'Article';
 
-
-      if (breadcrumbTitle) {
-
-        breadcrumbTitle.textContent =
-          article.title || 'Article';
-      }
-
-
-      /*
-       * View count.
-       *
-       * This preserves the existing behavior of incrementing
-       * on article load. It is intentionally isolated so that
-       * a failed update never prevents the article from loading.
-       */
-
-      let displayViews =
-        Number(article.views || 0);
-
-
-      const updatedViews =
-        displayViews + 1;
-
-
+      // Increment view count
+      let displayViews = Number(article.views || 0);
       try {
+        const { error: viewError } = await supabaseClient.from('articles').update({ views: displayViews + 1 }).eq('id', article.id);
+        if (!viewError) displayViews += 1;
+      } catch (_) {}
 
-        const {
-          error: viewError
-        } = await supabaseClient
-          .from('articles')
-          .update({
-            views: updatedViews
-          })
-          .eq('id', article.id);
-
-
-        if (!viewError) {
-          displayViews = updatedViews;
-        } else {
-
-          console.warn(
-            '[VHEOA] View count update failed:',
-            viewError
-          );
-        }
-
-      } catch (viewException) {
-
-        console.warn(
-          '[VHEOA] View count exception:',
-          viewException
-        );
-      }
-
-
-      /*
-       * LinkedIn actions.
-       */
-
-      const encodedPageUrl =
-        encodeURIComponent(
-          window.location.href
-        );
-
-      const linkedInShareUrl =
-        'https://www.linkedin.com/sharing/share-offsite/?url=' +
-        encodedPageUrl;
-
-
-      const followURL =
-        VHEOA_LINKEDIN_URL &&
-        VHEOA_LINKEDIN_URL !==
-          'YOUR_VHEOA_LINKEDIN_URL'
-          ? VHEOA_LINKEDIN_URL
-          : '#';
-
-
-      const followAction =
-        followURL === '#'
-          ? `event.preventDefault(); alert('The VHEOA LinkedIn page URL has not been configured yet.');`
-          : '';
-
-
-      /*
-       * IMPORTANT:
-       * article.content is trusted CMS HTML from Supabase.
-       * It is not escaped because rich-text HTML is the purpose
-       * of this field.
-       */
-
-      const articleContent =
-        article.content ||
-        '<p>No full content is available for this article yet.</p>';
-
-
-      const articleId =
-        escapeAttribute(article.id);
-
-
-      const articleTitle =
-        escapeHTML(article.title || 'VHEOA Article');
-
-
-      const articleTag =
-        escapeHTML(article.tag || 'VHEOA');
-
-
+      // Build article HTML
       container.innerHTML = `
-
         <div class="article-header">
-
-          <h1>
-            ${articleTitle}
-          </h1>
-
+          <h1>${escapeHTML(article.title)}</h1>
           <div class="meta">
-
-            <span class="tag">
-              ${articleTag}
-            </span>
-
-            ${article.featured
-              ? '<span>⭐ Featured</span>'
-              : ''}
-
-            <span class="view-count">
-              ${displayViews} views
-            </span>
-
+            <span class="tag">${escapeHTML(article.tag || 'VHEOA')}</span>
+            ${article.featured ? '<span>⭐ Featured</span>' : ''}
+            <span class="view-count">${displayViews} views</span>
           </div>
-
-
           <div class="action-buttons">
-
-            <a
-              href="${escapeAttribute(linkedInShareUrl)}"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="btn-save"
-            >
-              ↗ Repost on LinkedIn
-            </a>
-
-
-            <a
-              href="${escapeAttribute(followURL)}"
-              ${followURL !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''}
-              class="btn-follow"
-              onclick="${followAction}"
-            >
-              Follow VHEOA on LinkedIn →
-            </a>
-
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}" target="_blank" rel="noopener noreferrer" class="btn-save">↗ Repost on LinkedIn</a>
+            <a href="#" class="btn-follow" onclick="event.preventDefault(); alert('Follow VHEOA on LinkedIn – link to be added.');">Follow VHEOA on LinkedIn →</a>
           </div>
-
         </div>
-
-
-        <div
-          class="article-content"
-          data-article-id="${articleId}"
-        >
-          ${articleContent}
+        <div class="article-content" data-article-id="${escapeAttribute(article.id)}">
+          ${article.content || '<p>No full content available yet.</p>'}
         </div>
       `;
 
-
-      /*
-       * Resolve affiliate links AFTER article HTML has
-       * been inserted into the DOM.
-       *
-       * No arbitrary timeout is used.
-       */
-
+      // Rewrite affiliate links
       await rewriteDynamicLinks(article.id);
-
-
-    } catch (error) {
-
-      console.error(
-        '[VHEOA] Error loading article:',
-        error
-      );
-
-      container.innerHTML =
-        `<div class="empty-state">
-           The article could not be loaded.
-         </div>`;
+    } catch (_) {
+      container.innerHTML = `<div class="empty-state">The article could not be loaded.</div>`;
     }
   }
 
+  /* ============================================================
+     AFFILIATE LINK RESOLUTION & CLICK TRACKING
+     ============================================================ */
+
+  async function rewriteDynamicLinks(articleId) {
+    const container = document.querySelector(`.article-content[data-article-id="${CSS.escape(String(articleId))}"]`);
+    if (!container) return;
+
+    const links = container.querySelectorAll('.dynamic-link');
+    if (!links.length) return;
+
+    const country = await getCountryCode();
+
+    try {
+      const { data: affiliateLinks, error } = await supabaseClient.from('affiliate_links').select('affiliate_key, link_url, country_code').eq('article_id', articleId).in('country_code', [country, 'default']);
+      if (error || !affiliateLinks) {
+        links.forEach(link => { link.classList.add('disabled'); link.title = 'Affiliate link unavailable'; });
+        return;
+      }
+
+      const linkMap = {};
+      affiliateLinks.forEach(item => {
+        const key = String(item.affiliate_key || '').trim().toLowerCase();
+        if (key && item.link_url) {
+          if (item.country_code === country) linkMap[key] = item.link_url;
+          else if (item.country_code === 'default' && !linkMap[key]) linkMap[key] = item.link_url;
+        }
+      });
+
+      links.forEach(link => {
+        const key = String(link.dataset.affiliateKey || '').trim().toLowerCase();
+        const url = key ? linkMap[key] : null;
+        if (url) {
+          link.href = url;
+          link.classList.remove('disabled');
+          link.title = '';
+          link.removeEventListener('click', trackClickHandler);
+          link.addEventListener('click', trackClickHandler);
+        } else {
+          link.classList.add('disabled');
+          link.removeAttribute('href');
+          link.title = 'No affiliate link available for your region';
+        }
+      });
+    } catch (_) {}
+  }
+
+  async function trackClickHandler(e) {
+    e.preventDefault();
+    const link = e.currentTarget;
+    const href = link.href;
+    if (!href) return;
+
+    const affiliateKey = link.dataset.affiliateKey || null;
+    const articleContent = link.closest('.article-content');
+    const articleId = articleContent?.dataset.articleId || null;
+    const country = await getCountryCode();
+    const visitorId = getVisitorId();
+
+    try {
+      await supabaseClient.from('click_logs').insert({
+        article_id: articleId || null,
+        affiliate_key: affiliateKey,
+        link_url: href,
+        country_code: country,
+        visitor_id: visitorId,
+        user_agent: navigator.userAgent
+      });
+    } catch (_) {}
+
+    window.open(href, '_blank', 'noopener');
+  }
 
   /* ============================================================
      SEARCH
-
-     Search is performed against the cards currently displayed.
      ============================================================ */
 
   function setupSearch() {
-
-    const input =
-      document.getElementById('searchInput');
-
+    const input = document.getElementById('searchInput');
     if (!input) return;
-
-    input.addEventListener(
-      'input',
-      filterArticles
-    );
+    input.addEventListener('input', filterArticles);
   }
-
 
   function filterArticles() {
-
-    const query =
-      (
-        document.getElementById(
-          'searchInput'
-        )?.value || ''
-      )
-        .toLowerCase()
-        .trim();
-
-
-    const cards =
-      document.querySelectorAll(
-        '.card'
-      );
-
-
+    const query = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+    const cards = document.querySelectorAll('.card');
     cards.forEach(card => {
-
-      const title =
-        card.dataset.title || '';
-
-      const tag =
-        card.dataset.tag || '';
-
-      const match =
-        !query ||
-        title.includes(query) ||
-        tag.includes(query);
-
-      card.style.display =
-        match ? '' : 'none';
+      const title = card.dataset.title || '';
+      const tag = card.dataset.tag || '';
+      const match = !query || title.includes(query) || tag.includes(query);
+      card.style.display = match ? '' : 'none';
     });
   }
-
 
   /* ============================================================
      INITIAL LOAD
      ============================================================ */
 
-  document.addEventListener(
-    'DOMContentLoaded',
-    () => {
-
-      /*
-       * If the visitor opened an article/category URL directly,
-       * restore that route. Otherwise load the homepage.
-       */
-
-      handleHashChange();
-
-      if (!window.location.hash) {
-        navigateTo('home', false);
-      }
+  document.addEventListener('DOMContentLoaded', () => {
+    handleHashChange();
+    if (!window.location.hash) {
+      navigateTo('home', false);
     }
-  );
-
+  });
 </script>
 
 </body>
