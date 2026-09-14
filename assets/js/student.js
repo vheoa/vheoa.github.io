@@ -12,13 +12,12 @@ const params = new URLSearchParams(location.search);
 const id = params.get('id');
 const root = document.getElementById('profile');
 
-// ------------------------------------------------------------
-// Module state
-// ------------------------------------------------------------
 let fingerprint       = null;
-let turnstileReady    = false;
 let turnstileToken    = '';
 let turnstileWidgetId = null;
+
+let currentStudentId  = null;
+let hasVotedToday     = false;
 
 init();
 
@@ -31,65 +30,43 @@ async function init() {
   fingerprint = await getFingerprint().catch(() => null);
 
   await load(id);
-  initTurnstile();
   subscribeRealtime(id);
 }
 
 // ------------------------------------------------------------
-// Turnstile (visible checkbox — simplest, most reliable mode)
+// Turnstile — Cloudflare's official onload pattern
 // ------------------------------------------------------------
-window.onTurnstileSuccess = (t) => {
-  turnstileToken = t;
-  updateVoteButtonReady();
-};
-window.onTurnstileExpired = () => {
-  turnstileToken = '';
-  updateVoteButtonReady();
-};
-window.onTurnstileError = () => {
-  turnstileToken = '';
-  updateVoteButtonReady();
-};
-
-function initTurnstile() {
+window.VheoaTsReady = function () {
   const container = document.getElementById('turnstile-widget');
-  if (!container) return;
+  if (!container || container.dataset.rendered === 'true') return;
 
-  const tryRender = () => {
-    if (!window.turnstile) return false;
-    if (container.dataset.rendered === 'true') return true;
-
-    try {
-      turnstileWidgetId = window.turnstile.render(container, {
-        sitekey: TURNSTILE_SITE_KEY,
-        callback: 'onTurnstileSuccess',
-        'expired-callback': 'onTurnstileExpired',
-        'error-callback': 'onTurnstileError',
-        theme: 'dark',
-      });
-      container.dataset.rendered = 'true';
-      turnstileReady = true;
-      return true;
-    } catch (e) {
-      console.warn('Turnstile render failed:', e);
-      return false;
-    }
-  };
-
-  if (!tryRender()) {
-    const poll = setInterval(() => {
-      if (tryRender()) clearInterval(poll);
-    }, 200);
-    setTimeout(() => clearInterval(poll), 15000);
+  try {
+    turnstileWidgetId = window.turnstile.render(container, {
+      sitekey: TURNSTILE_SITE_KEY,
+      callback: function (token) {
+        turnstileToken = token;
+        updateVoteButtonReady();
+      },
+      'expired-callback': function () {
+        turnstileToken = '';
+        updateVoteButtonReady();
+      },
+      'error-callback': function () {
+        turnstileToken = '';
+        updateVoteButtonReady();
+      },
+      theme: 'dark',
+    });
+    container.dataset.rendered = 'true';
+  } catch (e) {
+    console.warn('Turnstile render error:', e);
   }
-}
+};
 
 function resetTurnstile() {
   turnstileToken = '';
   if (window.turnstile && turnstileWidgetId !== null) {
-    try {
-      window.turnstile.reset(turnstileWidgetId);
-    } catch { /* noop */ }
+    try { window.turnstile.reset(turnstileWidgetId); } catch { /* noop */ }
   }
   updateVoteButtonReady();
 }
@@ -169,9 +146,6 @@ async function load(studentId) {
 // ------------------------------------------------------------
 // Vote button state
 // ------------------------------------------------------------
-let currentStudentId = null;
-let hasVotedToday    = false;
-
 async function refreshVoteButton(studentId) {
   currentStudentId = studentId;
   const btn = document.getElementById('vote-btn');
@@ -188,30 +162,22 @@ async function refreshVoteButton(studentId) {
     p_fingerprint: fingerprint,
   });
 
-  if (error) {
-    hasVotedToday = false;
-  } else {
-    hasVotedToday = !!voted;
-  }
+  hasVotedToday = !error && !!voted;
 
   if (hasVotedToday) {
     btn.disabled = true;
     btn.textContent = 'You voted today ✓ — come back tomorrow';
-    // Hide the Turnstile box since they can't vote anyway
     const tw = document.getElementById('turnstile-widget');
     if (tw) tw.style.display = 'none';
   } else {
-    // Wait for the user to complete the security check
-    updateVoteButtonReady();
     wireVoteClick(studentId);
+    updateVoteButtonReady();
   }
 }
 
 function updateVoteButtonReady() {
   const btn = document.getElementById('vote-btn');
-  if (!btn) return;
-
-  if (hasVotedToday) return;
+  if (!btn || hasVotedToday) return;
 
   if (!fingerprint) {
     btn.disabled = true;
@@ -235,7 +201,7 @@ function wireVoteClick(studentId) {
 
   btn.addEventListener('click', async () => {
     if (!turnstileToken) {
-      showVoteMsg('Please complete the security check above the button.', 'error');
+      showVoteMsg('Please complete the security check first.', 'error');
       const tw = document.getElementById('turnstile-widget');
       if (tw) tw.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
@@ -290,7 +256,7 @@ function showVoteMsg(text, kind) {
 }
 
 // ------------------------------------------------------------
-// Realtime — update the counter when anyone votes
+// Realtime
 // ------------------------------------------------------------
 function subscribeRealtime(studentId) {
   sb.channel('student-' + studentId)
