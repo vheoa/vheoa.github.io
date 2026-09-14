@@ -6,6 +6,7 @@
 <title>Student — Vheoa</title>
 <link rel="icon" href="assets/img/favicon.svg" />
 <link rel="stylesheet" href="assets/css/style.css" />
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 
@@ -23,6 +24,9 @@
 <main class="container" id="profile">
   <p class="loading">Loading…</p>
 </main>
+
+<!-- Invisible Turnstile widget (used by the vote button) -->
+<div id="turnstile-widget" style="position:absolute; left:-9999px;" aria-hidden="true"></div>
 
 <footer class="site">
   <div class="container">© <span id="year"></span> Vheoa</div>
