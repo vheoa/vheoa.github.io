@@ -33,7 +33,7 @@
   <div id="globe"></div>
 
   <section id="ticker" style="margin: 30px 0 10px;"></section>
-
+  <section id="affiliate-strip" style="margin: 40px 0 0;"></section>
 </main>
 
 <footer class="site">
@@ -44,6 +44,10 @@
 
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 <script src="assets/js/config.js"></script>
-<script type="module" src="assets/js/globe.js?v=2"></script>
+<script type="module">
+  import { initAffiliateStrip } from './assets/js/affiliate.js';
+  initAffiliateStrip();
+</script>
+<script type="module" src="assets/js/globe.js"></script>
 </body>
 </html>
