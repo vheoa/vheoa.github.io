@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Vheoa — Rank the world's students</title>
 <meta name="description" content="Vheoa ranks students worldwide by merit — upvotes and seniority. Free forever. Submit your CV, get discovered." />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Vheoa — Rank the world's students" />
+<meta property="og:description" content="By merit, not money. Submit your CV, earn upvotes, climb the global leaderboard." />
+<meta property="og:url" content="https://vheoa.github.io/" />
+<meta property="og:image" content="https://vheoa.github.io/assets/img/og-default.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Vheoa — Rank the world's students" />
+<meta name="twitter:description" content="By merit, not money. Free forever." />
+<meta name="twitter:image" content="https://vheoa.github.io/assets/img/og-default.png" />
 <link rel="icon" href="assets/img/favicon.svg" />
 <link rel="stylesheet" href="assets/css/style.css" />
 </head>
@@ -30,7 +39,9 @@
     <a href="leaderboard.html" class="btn secondary">View leaderboard</a>
   </section>
 
-  <div id="globe"></div>
+   <div id="globe"></div>
+
+  <section id="rising-stars" style="margin: 40px 0 20px;"></section>
 
   <section id="ticker" style="margin: 30px 0 10px;"></section>
   <section id="affiliate-strip" style="margin: 40px 0 0;"></section>
@@ -46,8 +57,24 @@
 <script src="assets/js/config.js"></script>
 <script type="module">
   import { initAffiliateStrip } from './assets/js/affiliate.js';
+  import { initRisingStars } from './assets/js/rising.js';
   initAffiliateStrip();
+  initRisingStars();
 </script>
 <script type="module" src="assets/js/globe.js"></script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Vheoa",
+  "url": "https://vheoa.github.io/",
+  "description": "Rank the world's students by merit — upvotes and seniority. Free forever.",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://vheoa.github.io/leaderboard.html?course={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
 </body>
 </html>
