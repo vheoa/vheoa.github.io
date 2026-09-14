@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Leaderboard — Vheoa</title>
+<meta name="description" content="Student leaderboards by country and course. Ranked by merit." />
+<link rel="icon" href="assets/img/favicon.svg" />
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+<header class="site">
+  <div class="container inner">
+    <a href="/" class="logo">Vheoa</a>
+    <nav>
+      <a href="leaderboard.html">Leaderboard</a>
+      <a href="about.html">About</a>
+      <a href="submit.html">Submit CV</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="hero" style="padding: 40px 0 10px;">
+    <h1>Leaderboard</h1>
+    <p>Ranked by upvotes. Ties broken by seniority (older registration wins).</p>
+  </section>
+
+  <div class="filters">
+    <select id="filter-country"></select>
+    <input id="filter-course" type="text" placeholder="Filter by course…" autocomplete="off" />
+    <button id="clear-filters" class="btn secondary">Clear</button>
+  </div>
+
+  <div id="board">
+    <p class="loading">Loading…</p>
+  </div>
+
+</main>
+
+<footer class="site">
+  <div class="container">© <span id="year"></span> Vheoa</div>
+</footer>
+
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<script src="assets/js/config.js"></script>
+<script type="module" src="assets/js/leaderboard.js"></script>
+
+</body>
+</html>
