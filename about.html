@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>About — Vheoa</title>
+<meta name="description" content="Vheoa ranks students worldwide by merit — upvotes and seniority, never money. Learn how the ranking works and how we protect it from abuse." />
+<link rel="icon" href="assets/img/favicon.svg" />
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+<header class="site">
+  <div class="container inner">
+    <a href="/" class="logo">Vheoa</a>
+    <nav>
+      <a href="leaderboard.html">Leaderboard</a>
+      <a href="about.html">About</a>
+      <a href="submit.html">Submit CV</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="hero" style="padding: 40px 0 10px;">
+    <h1>About Vheoa</h1>
+    <p>The world's students, ranked by merit — never by money.</p>
+  </section>
+
+  <article class="prose">
+
+    <h2>What is Vheoa?</h2>
+    <p>
+      Vheoa is a public leaderboard for students. Every student who submits gets a
+      profile. Visitors browse those profiles, and if they like what they see, they
+      upvote. That's it. Rankings are driven entirely by votes and seniority —
+      no paid placements, no promoted listings, no sponsored rank.
+    </p>
+
+    <h2>How ranking works</h2>
+    <ol>
+      <li><strong>More upvotes wins.</strong> A student with more votes always outranks one with fewer.</li>
+      <li><strong>Seniority breaks ties.</strong> When two students have the same number of votes, the one who registered earlier ranks higher.</li>
+      <li><strong>One vote per student per day.</strong> A visitor can vote for a student once every 24 hours (UTC). They can vote for as many different students as they like.</li>
+    </ol>
+
+    <h2>Where your CV lives</h2>
+    <p>
+      Vheoa does <strong>not</strong> host your CV. You keep it on your own Google
+      Drive, set sharing to "Anyone with the link — Viewer," and give us the link.
+      That way you own your document, can update it whenever you want, and can
+      revoke access at any time.
+    </p>
+
+    <h2>How we keep votes honest</h2>
+    <p>Every vote is checked against four layers:</p>
+    <ul>
+      <li><strong>Cloudflare Turnstile</strong> — an invisible bot check on every vote.</li>
+      <li><strong>Device fingerprint</strong> — a stable hash of browser and hardware signals.</li>
+      <li><strong>IP-based rate limits</strong> — 60 votes per network per day.</li>
+      <li><strong>Per-voter limits</strong> — 20 votes per day, per fingerprint, with a rotating daily salt for privacy.</li>
+    </ul>
+    <p>
+      If a profile accumulates suspicious votes, we flag it and a moderator reviews it.
+      Votes that fail review are removed. Repeat abusers are shadow-banned.
+    </p>
+
+    <h2>Reporting a profile</h2>
+    <p>
+      Every profile has a <em>Report</em> button. If a CV is fake, offensive, or
+      simply broken, tell us. Reports are reviewed manually, and after enough
+      independent reports a profile is hidden automatically pending review.
+    </p>
+
+    <h2>Merchants</h2>
+    <p>
+      A paid directory for student-related merchants will arrive in a later phase.
+      It will be <strong>completely separate</strong> from the student leaderboard —
+      paid listings will never appear in student rankings.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      Questions, press, or abuse reports:
+      <a href="mailto:hello@vheoa.github.io">hello@vheoa.github.io</a>
+    </p>
+
+  </article>
+
+</main>
+
+<footer class="site">
+  <div class="container">
+    © <span id="year"></span> Vheoa · <a href="about.html">About</a>
+  </div>
+</footer>
+
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+
+</body>
+</html>
