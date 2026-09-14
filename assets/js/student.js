@@ -15,9 +15,9 @@ const root = document.getElementById('profile');
 // ------------------------------------------------------------
 // Module state
 // ------------------------------------------------------------
-let fingerprint    = null;
-let turnstileReady = false;
-let turnstileToken = '';
+let fingerprint       = null;
+let turnstileReady    = false;
+let turnstileToken    = '';
 let turnstileWidgetId = null;
 
 // ------------------------------------------------------------
@@ -39,10 +39,11 @@ async function init() {
 }
 
 // ------------------------------------------------------------
-// Turnstile (invisible)
+// Turnstile (interaction-only, runs automatically)
 // ------------------------------------------------------------
 window.onTurnstileSuccess = (t) => { turnstileToken = t; };
 window.onTurnstileExpired = () => { turnstileToken = ''; };
+window.onTurnstileError   = () => { turnstileToken = ''; };
 
 function initTurnstile() {
   const container = document.getElementById('turnstile-widget');
@@ -52,16 +53,22 @@ function initTurnstile() {
     if (!window.turnstile) return false;
     if (container.dataset.rendered === 'true') return true;
 
-    turnstileWidgetId = window.turnstile.render(container, {
-  sitekey: TURNSTILE_SITE_KEY,
-  callback: 'onTurnstileSuccess',
-  'expired-callback': 'onTurnstileExpired',
-  appearance: 'execute',   // hidden until execute() is called
-  theme: 'dark',
-});
-    container.dataset.rendered = 'true';
-    turnstileReady = true;
-    return true;
+    try {
+      turnstileWidgetId = window.turnstile.render(container, {
+        sitekey: TURNSTILE_SITE_KEY,
+        callback: 'onTurnstileSuccess',
+        'expired-callback': 'onTurnstileExpired',
+        'error-callback': 'onTurnstileError',
+        appearance: 'interaction-only',
+        theme: 'dark',
+      });
+      container.dataset.rendered = 'true';
+      turnstileReady = true;
+      return true;
+    } catch (e) {
+      console.warn('Turnstile render failed:', e);
+      return false;
+    }
   };
 
   if (!tryRender()) {
@@ -72,33 +79,15 @@ function initTurnstile() {
   }
 }
 
-async function getTurnstileToken() {
-  // If Turnstile isn't ready, wait up to 3 seconds
-  let waited = 0;
-  while (!turnstileReady && waited < 3000) {
-    await new Promise((r) => setTimeout(r, 100));
-    waited += 100;
+// Wait until a token exists (Turnstile solves the challenge in the background)
+async function waitForTurnstileToken(timeoutMs = 8000) {
+  const start = Date.now();
+  while (!turnstileToken) {
+    if (Date.now() - start > timeoutMs) {
+      throw new Error('Security check timed out. Please refresh and try again.');
+    }
+    await new Promise((r) => setTimeout(r, 150));
   }
-  if (!turnstileReady) throw new Error('Security check still loading. Please wait a moment.');
-
-  // If we already have a token, use it
-  if (turnstileToken) return turnstileToken;
-
-  // Otherwise execute the invisible widget
-  try {
-    const token = await window.turnstile.execute(turnstileWidgetId, {
-      action: 'vote',
-    });
-    if (token) { turnstileToken = token; return token; }
-  } catch { /* fall through */ }
-
-  // Fallback: wait briefly for the callback
-  waited = 0;
-  while (!turnstileToken && waited < 3000) {
-    await new Promise((r) => setTimeout(r, 100));
-    waited += 100;
-  }
-  if (!turnstileToken) throw new Error('Security check failed. Please refresh.');
   return turnstileToken;
 }
 
@@ -178,7 +167,6 @@ async function load(studentId) {
     </section>
   `;
 
-  // Set up the vote button
   await refreshVoteButton(studentId);
 }
 
@@ -201,9 +189,9 @@ async function refreshVoteButton(studentId) {
   });
 
   if (error) {
-    // Fall back to enabled state; the server will reject duplicates.
+    // Fall back: enable the button and let the server reject duplicates.
     btn.disabled = false;
-    btn.textContent = 'Upvote';
+    btn.textContent = 'Upvote ▲';
     wireVoteClick(studentId);
     return;
   }
@@ -225,11 +213,13 @@ function wireVoteClick(studentId) {
 
   btn.addEventListener('click', async () => {
     btn.disabled = true;
-    btn.textContent = 'Voting…';
+    btn.textContent = 'Checking…';
     showVoteMsg('', 'hidden');
 
     try {
-      const token = await getTurnstileToken();
+      const token = await waitForTurnstileToken(8000);
+
+      btn.textContent = 'Voting…';
 
       const { data, error } = await sb.rpc('cast_vote', {
         p_student_id:      studentId,
@@ -240,7 +230,6 @@ function wireVoteClick(studentId) {
       if (error) throw new Error(error.message || 'Vote failed.');
       if (data?.error) throw new Error(data.error);
 
-      // Success
       const countEl = document.getElementById('upvote-count');
       if (countEl && typeof data.upvote_count === 'number') {
         countEl.textContent = data.upvote_count;
