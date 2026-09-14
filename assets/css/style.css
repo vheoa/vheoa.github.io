@@ -549,3 +549,123 @@ footer.site {
   color: var(--fg-dim);
   font-size: 0.78rem;
 }
+/* ============================================================
+   VHEOA — Phase 5: About prose, Rising Stars, pulse
+   ============================================================ */
+
+/* About page prose */
+.prose {
+  max-width: 720px;
+  margin: 0 auto 60px;
+  padding: 20px 0;
+}
+.prose h2 {
+  margin: 36px 0 12px;
+  font-size: 1.3rem;
+  letter-spacing: -0.01em;
+}
+.prose p,
+.prose li {
+  color: #c8cfdc;
+  font-size: 1.02rem;
+  line-height: 1.7;
+}
+.prose ul,
+.prose ol {
+  padding-left: 22px;
+}
+.prose li {
+  margin-bottom: 6px;
+}
+.prose strong {
+  color: var(--fg);
+}
+
+/* Section titles (used by Rising Stars) */
+.section-title {
+  margin: 0 0 4px;
+  font-size: 1.3rem;
+  letter-spacing: -0.01em;
+}
+.section-sub {
+  margin: 0 0 20px;
+  color: var(--fg-dim);
+  font-size: 0.95rem;
+}
+
+/* Rising Stars grid */
+.rising-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.rising-card {
+  position: relative;
+  display: block;
+  padding: 18px 18px 16px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--fg);
+  overflow: hidden;
+  transition: transform 0.15s, border-color 0.15s;
+}
+.rising-card:hover {
+  border-color: #ffb347;
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+.rising-badge {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  color: #ffb347;
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.rising-name {
+  font-weight: 600;
+  font-size: 1.02rem;
+  margin-bottom: 4px;
+  padding-right: 26px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rising-meta {
+  color: var(--fg-dim);
+  font-size: 0.85rem;
+  margin-bottom: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rising-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.82rem;
+  color: var(--fg-dim);
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+.rising-stats strong {
+  color: var(--accent-2);
+  font-size: 1rem;
+}
+
+/* Vote pulse — triggered from JS when realtime updates arrive */
+@keyframes vheoa-pulse {
+  0%   { transform: scale(1);    color: var(--accent-2); }
+  40%  { transform: scale(1.18); color: #7ef0c6; }
+  100% { transform: scale(1);    color: var(--accent-2); }
+}
+.score-num.pulse {
+  animation: vheoa-pulse 0.6s ease-out;
+}
