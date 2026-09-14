@@ -1,5 +1,5 @@
 // ============================================================
-// VHEOA — Student profile page (with voting)
+// VHEOA — Student profile page (voting + report + rising star)
 // ============================================================
 
 import { sb } from './supabase.js';
@@ -68,15 +68,12 @@ function renderTurnstileOnce() {
 }
 
 function bootTurnstile() {
-  // Try immediately
   if (renderTurnstileOnce()) return;
 
-  // Register for the ready callback
   if (window.__tsReadyQueue) {
     window.__tsReadyQueue.push(renderTurnstileOnce);
   }
 
-  // Belt-and-braces polling in case the queue was already flushed
   const pollId = setInterval(() => {
     if (renderTurnstileOnce()) clearInterval(pollId);
   }, 250);
@@ -145,6 +142,15 @@ async function load(studentId) {
         <a class="btn secondary" href="leaderboard.html?country=${esc(data.country_code)}">
           See ${esc(countryName(data.country_code))} leaderboard
         </a>
+        <button class="btn ghost" id="report-btn" title="Report this profile">⚑ Report</button>
+      </div>
+
+      <div id="report-panel" class="report-panel hidden">
+        <textarea id="report-reason" placeholder="Describe the issue (spam, fake CV, etc.)" maxlength="500"></textarea>
+        <div class="report-actions">
+          <button class="btn" id="report-submit">Submit report</button>
+          <button class="btn secondary" id="report-cancel">Cancel</button>
+        </div>
       </div>
 
       <div id="vote-msg" class="message hidden" style="max-width:520px;"></div>
@@ -161,6 +167,8 @@ async function load(studentId) {
   `;
 
   await refreshVoteButton(studentId);
+  checkRisingStar(studentId);
+  wireReportButton(studentId);
 }
 
 // ------------------------------------------------------------
@@ -221,7 +229,7 @@ function wireVoteClick(studentId) {
 
   btn.addEventListener('click', async () => {
     if (!turnstileToken) {
-      showVoteMsg('Please complete the security check first.', 'error');
+      showMsg('Please complete the security check first.', 'error');
       const tw = document.getElementById('turnstile-widget');
       if (tw) tw.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
@@ -229,7 +237,7 @@ function wireVoteClick(studentId) {
 
     btn.disabled = true;
     btn.textContent = 'Voting…';
-    showVoteMsg('', 'hidden');
+    showMsg('', 'hidden');
 
     try {
       const { data, error } = await sb.rpc('cast_vote', {
@@ -249,13 +257,13 @@ function wireVoteClick(studentId) {
       hasVotedToday = true;
       btn.textContent = 'You voted today ✓ — come back tomorrow';
       btn.disabled = true;
-      showVoteMsg('Thanks for voting!', 'success');
+      showMsg('Thanks for voting!', 'success');
 
       const tw = document.getElementById('turnstile-widget');
       if (tw) tw.style.display = 'none';
 
     } catch (err) {
-      showVoteMsg(err.message || 'Something went wrong.', 'error');
+      showMsg(err.message || 'Something went wrong.', 'error');
       btn.disabled = false;
       btn.textContent = turnstileToken ? 'Upvote ▲' : 'Complete security check →';
       resetTurnstile();
@@ -263,7 +271,10 @@ function wireVoteClick(studentId) {
   });
 }
 
-function showVoteMsg(text, kind) {
+// ------------------------------------------------------------
+// Shared message helper
+// ------------------------------------------------------------
+function showMsg(text, kind) {
   const m = document.getElementById('vote-msg');
   if (!m) return;
   if (kind === 'hidden' || !text) {
@@ -276,7 +287,78 @@ function showVoteMsg(text, kind) {
 }
 
 // ------------------------------------------------------------
-// Realtime
+// Rising Star badge
+// ------------------------------------------------------------
+async function checkRisingStar(studentId) {
+  const { data, error } = await sb
+    .from('rising_stars')
+    .select('id')
+    .eq('id', studentId)
+    .maybeSingle();
+
+  if (error || !data) return;
+
+  const h1 = document.querySelector('.profile-head h1');
+  if (!h1 || h1.querySelector('.badge-rising')) return;
+
+  const badge = document.createElement('span');
+  badge.className = 'badge-rising';
+  badge.textContent = '★ Rising Star';
+  badge.title = 'Top recent mover — lots of votes in the last 7 days';
+  h1.appendChild(badge);
+}
+
+// ------------------------------------------------------------
+// Report button
+// ------------------------------------------------------------
+function wireReportButton(studentId) {
+  const btn     = document.getElementById('report-btn');
+  const panel   = document.getElementById('report-panel');
+  const input   = document.getElementById('report-reason');
+  const submit  = document.getElementById('report-submit');
+  const cancel  = document.getElementById('report-cancel');
+  if (!btn || !panel) return;
+
+  btn.addEventListener('click', () => panel.classList.toggle('hidden'));
+
+  cancel.addEventListener('click', () => {
+    panel.classList.add('hidden');
+    input.value = '';
+  });
+
+  submit.addEventListener('click', async () => {
+    const reason = input.value.trim();
+    if (reason.length < 3) {
+      showMsg('Please describe the issue (3+ characters).', 'error');
+      return;
+    }
+
+    submit.disabled = true;
+    submit.textContent = 'Sending…';
+
+    try {
+      const { data, error } = await sb.rpc('submit_report', {
+        p_student_id: studentId,
+        p_reason:     reason,
+      });
+
+      if (error) throw new Error(error.message || 'Report failed.');
+      if (data?.error) throw new Error(data.error);
+
+      panel.classList.add('hidden');
+      input.value = '';
+      showMsg('Thanks — a moderator will review this profile.', 'success');
+    } catch (err) {
+      showMsg(err.message || 'Could not send the report.', 'error');
+    } finally {
+      submit.disabled = false;
+      submit.textContent = 'Submit report';
+    }
+  });
+}
+
+// ------------------------------------------------------------
+// Realtime — counter updates when anyone votes
 // ------------------------------------------------------------
 function subscribeRealtime(studentId) {
   sb.channel('student-' + studentId)
