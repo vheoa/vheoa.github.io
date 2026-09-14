@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Submit your CV — Vheoa</title>
+<meta name="description" content="Submit your CV to Vheoa. Free forever. Ranked by merit." />
+<link rel="icon" href="assets/img/favicon.svg" />
+<link rel="stylesheet" href="assets/css/style.css" />
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+
+<header class="site">
+  <div class="container inner">
+    <a href="/" class="logo">Vheoa</a>
+    <nav>
+      <a href="leaderboard.html">Leaderboard</a>
+      <a href="about.html">About</a>
+      <a href="submit.html">Submit CV</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="hero" style="padding: 40px 0 10px;">
+    <h1>Submit your CV</h1>
+    <p>Free forever. Your CV stays on your own Google Drive — you only share a view-only link.</p>
+  </section>
+
+  <form id="submit-form" class="card" novalidate>
+
+    <div class="field">
+      <label for="full_name">Full name *</label>
+      <input id="full_name" name="full_name" type="text" required maxlength="100" autocomplete="name" />
+    </div>
+
+    <div class="field">
+      <label for="email">Email *</label>
+      <input id="email" name="email" type="email" required autocomplete="email" />
+      <small>Used only to prevent duplicate submissions.</small>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="country">Country *</label>
+        <select id="country" name="country" required></select>
+      </div>
+      <div class="field">
+        <label for="course">Course / Field *</label>
+        <input id="course" name="course" type="text" required maxlength="100"
+               placeholder="e.g. Computer Science, Medicine, Law" />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="cv_url">Google Drive CV link (view-only) *</label>
+      <input id="cv_url" name="cv_url" type="url" required
+             placeholder="https://drive.google.com/file/d/..." />
+      <small>
+        In Google Drive: <strong>Share → General access → Anyone with the link → Viewer</strong>.
+        We verify this automatically before accepting your submission.
+      </small>
+    </div>
+
+    <div class="field">
+      <label>Portfolio links <span class="dim">(optional, max 5)</span></label>
+      <div id="portfolio-list"></div>
+      <button type="button" class="btn secondary" id="add-portfolio">+ Add link</button>
+    </div>
+
+    <div class="field">
+      <div id="turnstile-widget"></div>
+    </div>
+
+    <div id="form-message" class="message hidden"></div>
+
+    <button type="submit" class="btn" id="submit-btn">Submit CV</button>
+
+  </form>
+
+</main>
+
+<footer class="site">
+  <div class="container">© <span id="year"></span> Vheoa</div>
+</footer>
+
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<script src="assets/js/config.js"></script>
+<script type="module" src="assets/js/submit.js"></script>
+
+</body>
+</html>
