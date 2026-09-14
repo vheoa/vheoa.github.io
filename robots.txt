@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /assets/js/config.js
+
+Sitemap: https://vheoa.github.io/sitemap.xml
