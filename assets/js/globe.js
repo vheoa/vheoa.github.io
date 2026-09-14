@@ -8,6 +8,12 @@ import { GEO } from './geo.js';
 import { countryName } from './countries.js';
 
 // ------------------------------------------------------------
+// 1. Build the globe
+// ------------------------------------------------------------
+let world;
+let controls;
+
+// ------------------------------------------------------------
 // 0. Wait for #globe to exist, then boot
 // ------------------------------------------------------------
 function boot() {
@@ -27,11 +33,7 @@ if (document.readyState === 'loading') {
   boot();
 }
 
-// ------------------------------------------------------------
-// 1. Build the globe
-// ------------------------------------------------------------
-let world;
-let controls;
+
 
 function initGlobe(el) {
   world = new Globe(el)
