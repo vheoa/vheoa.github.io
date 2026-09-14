@@ -409,3 +409,30 @@ footer.site {
 #globe:active {
   cursor: grabbing;
 }
+/* ============================================================
+   VHEOA — Phase 3: vote button polish
+   ============================================================ */
+
+#vote-btn {
+  background: var(--accent-2);
+  color: #051612;
+}
+#vote-btn:hover:not(:disabled) {
+  background: #1fbc93;
+}
+#vote-btn:disabled {
+  background: var(--bg-elev);
+  color: var(--fg-dim);
+  border: 1px solid var(--border);
+  cursor: not-allowed;
+}
+
+/* Score pulse when realtime updates arrive */
+@keyframes vheoa-pulse {
+  0%   { transform: scale(1);   color: var(--accent-2); }
+  40%  { transform: scale(1.15); color: #7ef0c6; }
+  100% { transform: scale(1);   color: var(--accent-2); }
+}
+.score-num.pulse {
+  animation: vheoa-pulse 0.6s ease-out;
+}
