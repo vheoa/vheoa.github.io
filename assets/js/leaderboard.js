@@ -112,3 +112,18 @@ function esc(s) {
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]),
   );
 }
+// ------------------------------------------------------------
+// Realtime — refresh list whenever any student's count changes
+// ------------------------------------------------------------
+let refreshTimer = null;
+sb.channel('leaderboard-live')
+  .on(
+    'postgres_changes',
+    { event: 'UPDATE', schema: 'public', table: 'students' },
+    () => {
+      // Debounce: multiple rapid updates coalesce into one refresh
+      clearTimeout(refreshTimer);
+      refreshTimer = setTimeout(() => refresh(), 800);
+    },
+  )
+  .subscribe();
