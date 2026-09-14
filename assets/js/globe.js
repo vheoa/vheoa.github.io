@@ -8,21 +8,20 @@ import { GEO } from './geo.js';
 import { countryName } from './countries.js';
 
 // ------------------------------------------------------------
-// 1. Build the globe
+// 0. Module-scope state (must be declared before boot() runs)
 // ------------------------------------------------------------
 let world;
 let controls;
 
 // ------------------------------------------------------------
-// 0. Wait for #globe to exist, then boot
+// 1. Wait for #globe to exist, then boot
 // ------------------------------------------------------------
 function boot() {
   const el = document.getElementById('globe');
   if (!el) {
-    // The home page has no globe; quietly exit.
+    // Home page without a globe — quietly do nothing.
     return;
   }
-
   initGlobe(el);
   loadGlobeData();
 }
@@ -33,8 +32,9 @@ if (document.readyState === 'loading') {
   boot();
 }
 
-
-
+// ------------------------------------------------------------
+// 2. Build the globe
+// ------------------------------------------------------------
 function initGlobe(el) {
   world = new Globe(el)
     .globeTileEngineUrl((x, y, l) =>
@@ -62,7 +62,7 @@ function initGlobe(el) {
 }
 
 // ------------------------------------------------------------
-// 2. Fetch students
+// 3. Fetch students
 // ------------------------------------------------------------
 async function loadGlobeData() {
   const { data, error } = await sb
@@ -83,7 +83,7 @@ async function loadGlobeData() {
 }
 
 // ------------------------------------------------------------
-// 3. Aggregate students by country
+// 4. Aggregate students by country
 // ------------------------------------------------------------
 function aggregate(students) {
   const map = {};
@@ -116,9 +116,11 @@ function aggregate(students) {
 }
 
 // ------------------------------------------------------------
-// 4. Plot markers
+// 5. Plot markers
 // ------------------------------------------------------------
 function renderPoints(points) {
+  if (!world) return;
+
   const maxCount   = Math.max(1, ...points.map((p) => p.count));
   const maxUpvotes = Math.max(1, ...points.map((p) => p.totalUpvotes));
 
@@ -162,10 +164,13 @@ function renderPoints(points) {
     });
 
   world.onPointHover((p) => {
-    controls.autoRotate = !p;
+    if (controls) controls.autoRotate = !p;
   });
 }
 
+// ------------------------------------------------------------
+// 6. Colour scale (cool blue → hot green)
+// ------------------------------------------------------------
 function colorFor(ratio) {
   const r = Math.round(79  + (34  - 79)  * ratio);
   const g = Math.round(140 + (211 - 140) * ratio);
@@ -174,7 +179,7 @@ function colorFor(ratio) {
 }
 
 // ------------------------------------------------------------
-// 5. Recently joined ticker
+// 7. Recently-joined ticker
 // ------------------------------------------------------------
 function renderTicker(students) {
   const ticker = document.getElementById('ticker');
@@ -208,7 +213,7 @@ function renderTicker(students) {
 }
 
 // ------------------------------------------------------------
-// 6. Utilities
+// 8. Utilities
 // ------------------------------------------------------------
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, (c) =>
