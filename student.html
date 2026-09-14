@@ -6,7 +6,23 @@
 <title>Student — Vheoa</title>
 <link rel="icon" href="assets/img/favicon.svg" />
 <link rel="stylesheet" href="assets/css/style.css" />
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=VheoaTsReady&render=explicit" async defer></script>
+
+<!-- Turnstile setup — the ready queue MUST exist before api.js loads -->
+<script>
+  window.__tsReadyQueue = [];
+  window.__tsReady = false;
+  window.VheoaTsReady = function () {
+    window.__tsReady = true;
+    var q = window.__tsReadyQueue;
+    window.__tsReadyQueue = [];
+    for (var i = 0; i < q.length; i++) {
+      try { q[i](); } catch (e) { console.warn('TS ready cb failed', e); }
+    }
+  };
+</script>
+<script
+  src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=VheoaTsReady&render=explicit"
+  async defer></script>
 </head>
 <body>
 
