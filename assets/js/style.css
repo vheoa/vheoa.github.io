@@ -353,3 +353,59 @@ footer.site {
   text-align: center;
   padding: 60px 0;
 }
+/* ============================================================
+   VHEOA — Phase 2: globe tooltip + ticker
+   ============================================================ */
+
+/* Ticker */
+.ticker-title {
+  margin: 0 0 14px;
+  font-size: 0.95rem;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.ticker-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.ticker-card {
+  display: block;
+  padding: 14px 16px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--fg);
+  transition: border-color 0.15s, transform 0.15s;
+}
+.ticker-card:hover {
+  border-color: var(--accent);
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+.ticker-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ticker-meta {
+  font-size: 0.82rem;
+  color: var(--fg-dim);
+}
+
+/* Slight polish on the globe */
+#globe {
+  cursor: grab;
+}
+#globe:active {
+  cursor: grabbing;
+}
