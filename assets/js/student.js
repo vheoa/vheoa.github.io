@@ -31,37 +31,57 @@ async function init() {
 
   await load(id);
   subscribeRealtime(id);
+  bootTurnstile();
 }
 
 // ------------------------------------------------------------
-// Turnstile — Cloudflare's official onload pattern
+// Turnstile — robust render regardless of load order
 // ------------------------------------------------------------
-window.VheoaTsReady = function () {
+function renderTurnstileOnce() {
   const container = document.getElementById('turnstile-widget');
-  if (!container || container.dataset.rendered === 'true') return;
+  if (!container || container.dataset.rendered === 'true') return true;
+  if (!window.turnstile) return false;
 
   try {
     turnstileWidgetId = window.turnstile.render(container, {
       sitekey: TURNSTILE_SITE_KEY,
-      callback: function (token) {
+      theme: 'dark',
+      callback: (token) => {
         turnstileToken = token;
         updateVoteButtonReady();
       },
-      'expired-callback': function () {
+      'expired-callback': () => {
         turnstileToken = '';
         updateVoteButtonReady();
       },
-      'error-callback': function () {
+      'error-callback': () => {
         turnstileToken = '';
         updateVoteButtonReady();
       },
-      theme: 'dark',
     });
     container.dataset.rendered = 'true';
+    return true;
   } catch (e) {
-    console.warn('Turnstile render error:', e);
+    console.warn('Turnstile render failed:', e);
+    return false;
   }
-};
+}
+
+function bootTurnstile() {
+  // Try immediately
+  if (renderTurnstileOnce()) return;
+
+  // Register for the ready callback
+  if (window.__tsReadyQueue) {
+    window.__tsReadyQueue.push(renderTurnstileOnce);
+  }
+
+  // Belt-and-braces polling in case the queue was already flushed
+  const pollId = setInterval(() => {
+    if (renderTurnstileOnce()) clearInterval(pollId);
+  }, 250);
+  setTimeout(() => clearInterval(pollId), 15000);
+}
 
 function resetTurnstile() {
   turnstileToken = '';
