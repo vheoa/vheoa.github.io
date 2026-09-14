@@ -53,12 +53,12 @@ function initTurnstile() {
     if (container.dataset.rendered === 'true') return true;
 
     turnstileWidgetId = window.turnstile.render(container, {
-      sitekey: TURNSTILE_SITE_KEY,
-      callback: 'onTurnstileSuccess',
-      'expired-callback': 'onTurnstileExpired',
-      size: 'invisible',
-      theme: 'dark',
-    });
+  sitekey: TURNSTILE_SITE_KEY,
+  callback: 'onTurnstileSuccess',
+  'expired-callback': 'onTurnstileExpired',
+  appearance: 'execute',   // hidden until execute() is called
+  theme: 'dark',
+});
     container.dataset.rendered = 'true';
     turnstileReady = true;
     return true;
