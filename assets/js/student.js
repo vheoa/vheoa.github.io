@@ -20,9 +20,6 @@ let turnstileReady    = false;
 let turnstileToken    = '';
 let turnstileWidgetId = null;
 
-// ------------------------------------------------------------
-// Boot
-// ------------------------------------------------------------
 init();
 
 async function init() {
@@ -39,11 +36,20 @@ async function init() {
 }
 
 // ------------------------------------------------------------
-// Turnstile (interaction-only, runs automatically)
+// Turnstile (visible checkbox — simplest, most reliable mode)
 // ------------------------------------------------------------
-window.onTurnstileSuccess = (t) => { turnstileToken = t; };
-window.onTurnstileExpired = () => { turnstileToken = ''; };
-window.onTurnstileError   = () => { turnstileToken = ''; };
+window.onTurnstileSuccess = (t) => {
+  turnstileToken = t;
+  updateVoteButtonReady();
+};
+window.onTurnstileExpired = () => {
+  turnstileToken = '';
+  updateVoteButtonReady();
+};
+window.onTurnstileError = () => {
+  turnstileToken = '';
+  updateVoteButtonReady();
+};
 
 function initTurnstile() {
   const container = document.getElementById('turnstile-widget');
@@ -59,7 +65,6 @@ function initTurnstile() {
         callback: 'onTurnstileSuccess',
         'expired-callback': 'onTurnstileExpired',
         'error-callback': 'onTurnstileError',
-        appearance: 'interaction-only',
         theme: 'dark',
       });
       container.dataset.rendered = 'true';
@@ -75,27 +80,18 @@ function initTurnstile() {
     const poll = setInterval(() => {
       if (tryRender()) clearInterval(poll);
     }, 200);
-    setTimeout(() => clearInterval(poll), 10000);
+    setTimeout(() => clearInterval(poll), 15000);
   }
-}
-
-// Wait until a token exists (Turnstile solves the challenge in the background)
-async function waitForTurnstileToken(timeoutMs = 8000) {
-  const start = Date.now();
-  while (!turnstileToken) {
-    if (Date.now() - start > timeoutMs) {
-      throw new Error('Security check timed out. Please refresh and try again.');
-    }
-    await new Promise((r) => setTimeout(r, 150));
-  }
-  return turnstileToken;
 }
 
 function resetTurnstile() {
   turnstileToken = '';
   if (window.turnstile && turnstileWidgetId !== null) {
-    try { window.turnstile.reset(turnstileWidgetId); } catch { /* noop */ }
+    try {
+      window.turnstile.reset(turnstileWidgetId);
+    } catch { /* noop */ }
   }
+  updateVoteButtonReady();
 }
 
 // ------------------------------------------------------------
@@ -173,7 +169,11 @@ async function load(studentId) {
 // ------------------------------------------------------------
 // Vote button state
 // ------------------------------------------------------------
+let currentStudentId = null;
+let hasVotedToday    = false;
+
 async function refreshVoteButton(studentId) {
+  currentStudentId = studentId;
   const btn = document.getElementById('vote-btn');
   if (!btn) return;
 
@@ -189,20 +189,42 @@ async function refreshVoteButton(studentId) {
   });
 
   if (error) {
-    // Fall back: enable the button and let the server reject duplicates.
-    btn.disabled = false;
-    btn.textContent = 'Upvote ▲';
+    hasVotedToday = false;
+  } else {
+    hasVotedToday = !!voted;
+  }
+
+  if (hasVotedToday) {
+    btn.disabled = true;
+    btn.textContent = 'You voted today ✓ — come back tomorrow';
+    // Hide the Turnstile box since they can't vote anyway
+    const tw = document.getElementById('turnstile-widget');
+    if (tw) tw.style.display = 'none';
+  } else {
+    // Wait for the user to complete the security check
+    updateVoteButtonReady();
     wireVoteClick(studentId);
+  }
+}
+
+function updateVoteButtonReady() {
+  const btn = document.getElementById('vote-btn');
+  if (!btn) return;
+
+  if (hasVotedToday) return;
+
+  if (!fingerprint) {
+    btn.disabled = true;
+    btn.textContent = 'Voting unavailable';
     return;
   }
 
-  if (voted) {
+  if (!turnstileToken) {
     btn.disabled = true;
-    btn.textContent = 'You voted today ✓ — come back tomorrow';
+    btn.textContent = 'Complete security check →';
   } else {
     btn.disabled = false;
     btn.textContent = 'Upvote ▲';
-    wireVoteClick(studentId);
   }
 }
 
@@ -212,19 +234,22 @@ function wireVoteClick(studentId) {
   btn.dataset.wired = 'true';
 
   btn.addEventListener('click', async () => {
+    if (!turnstileToken) {
+      showVoteMsg('Please complete the security check above the button.', 'error');
+      const tw = document.getElementById('turnstile-widget');
+      if (tw) tw.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
     btn.disabled = true;
-    btn.textContent = 'Checking…';
+    btn.textContent = 'Voting…';
     showVoteMsg('', 'hidden');
 
     try {
-      const token = await waitForTurnstileToken(8000);
-
-      btn.textContent = 'Voting…';
-
       const { data, error } = await sb.rpc('cast_vote', {
         p_student_id:      studentId,
         p_fingerprint:     fingerprint,
-        p_turnstile_token: token,
+        p_turnstile_token: turnstileToken,
       });
 
       if (error) throw new Error(error.message || 'Vote failed.');
@@ -235,14 +260,18 @@ function wireVoteClick(studentId) {
         countEl.textContent = data.upvote_count;
       }
 
+      hasVotedToday = true;
       btn.textContent = 'You voted today ✓ — come back tomorrow';
       btn.disabled = true;
       showVoteMsg('Thanks for voting!', 'success');
 
+      const tw = document.getElementById('turnstile-widget');
+      if (tw) tw.style.display = 'none';
+
     } catch (err) {
       showVoteMsg(err.message || 'Something went wrong.', 'error');
       btn.disabled = false;
-      btn.textContent = 'Upvote ▲';
+      btn.textContent = turnstileToken ? 'Upvote ▲' : 'Complete security check →';
       resetTurnstile();
     }
   });
