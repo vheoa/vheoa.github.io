@@ -370,10 +370,13 @@ function subscribeRealtime(studentId) {
         table: 'students',
         filter: `id=eq.${studentId}`,
       },
-      (payload) => {
+            (payload) => {
         const countEl = document.getElementById('upvote-count');
         if (countEl && payload.new && typeof payload.new.upvote_count === 'number') {
           countEl.textContent = payload.new.upvote_count;
+          countEl.classList.remove('pulse');
+          void countEl.offsetWidth;   // force reflow so animation restarts
+          countEl.classList.add('pulse');
         }
       },
     )
