@@ -958,3 +958,44 @@ footer.site {
   font-style: normal;
   font-weight: 600;
 }
+/* ============================================================
+   VHEOA — Phase 11: admin merchant tab
+   ============================================================ */
+
+.merchant-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+.filter-btn {
+  padding: 7px 14px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--fg-dim);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.15s, color 0.15s;
+}
+.filter-btn:hover {
+  color: var(--fg);
+  border-color: var(--fg-dim);
+}
+.filter-btn.active {
+  color: var(--fg);
+  border-color: var(--accent);
+  background: rgba(79, 140, 255, 0.08);
+}
+
+/* Tighten the admin table buttons a bit more (three actions per row) */
+#panel-merchants .board .btn.ghost {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  margin-left: 4px;
+}
+#panel-merchants .board td {
+  vertical-align: top;
+}
