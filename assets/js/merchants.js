@@ -4,10 +4,87 @@
 
 import { sb } from './supabase.js';
 import { COUNTRIES } from './countries.js';
+import { initMerchantBoard } from './merchant-board.js';
+
+initMerchantBoard();
+loadRankTargets();
 
 const form = document.getElementById('merchant-form');
 const msg  = document.getElementById('merchant-msg');
 const btn  = document.getElementById('merchant-submit');
+
+const countrySel = document.getElementById('country');
+countrySel.innerHTML =
+  `<option value="">Select country…</option>` +
+  COUNTRIES.map((c) => `<option value="${c.code}">${c.name}</option>`).join('');
+
+// ------------------------------------------------------------
+// Load rank targets + countdown
+// ------------------------------------------------------------
+async function loadRankTargets() {
+  const el = document.getElementById('rank-targets-content');
+  const header = document.getElementById('rank-targets');
+  if (!el) return;
+
+  const { data, error } = await sb.rpc('merchant_rank_targets');
+
+  if (error || !data) {
+    el.textContent = 'Could not load current rankings.';
+    return;
+  }
+
+  const resetText = data.resets_in_sec
+    ? `<p class="dim" style="margin: 0 0 14px; font-size:0.85rem;">
+         Next reset in <strong>${formatCountdown(data.resets_in_sec)}</strong>
+       </p>`
+    : '';
+
+  const rows = (data.ranks || []).map((r) => {
+    const required = Number(r.week_score_usd) + 5;
+    const label =
+      r.business_name
+        ? `Rank #${r.rank} — ${esc(r.business_name)} ($${Number(r.week_score_usd).toFixed(2)})`
+        : `Rank #${r.rank} — be the first`;
+    return `
+      <button type="button" class="rank-target" data-amount="${required.toFixed(2)}">
+        <span class="rank-target-label">${label}</span>
+        <span class="rank-target-price">pay $${required.toFixed(2)}</span>
+      </button>
+    `;
+  }).join('');
+
+  el.innerHTML = `
+    ${resetText}
+    <div class="rank-target-list">${rows}</div>
+    <p class="dim" style="font-size:0.82rem; margin-top:12px;">
+      Deposits add to your weekly score. Every Monday at 00:00 UTC, scores reset to $0 — everybody starts fresh.
+    </p>
+  `;
+
+  // Wire click → pre-fill amount
+  el.querySelectorAll('.rank-target').forEach((b) => {
+    b.addEventListener('click', () => {
+      document.getElementById('amount_usd').value =
+        Number(b.dataset.amount).toFixed(2);
+      document.getElementById('amount_usd').focus();
+    });
+  });
+}
+
+function formatCountdown(sec) {
+  const d = Math.floor(sec / 86400);
+  const h = Math.floor((sec % 86400) / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  if (d > 0) return `${d}d ${h}h`;
+  if (h > 0) return `${h}h ${m}m`;
+  return `${m}m`;
+}
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, (c) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]),
+  );
+}
 
 // Populate countries
 const countrySel = document.getElementById('country');
