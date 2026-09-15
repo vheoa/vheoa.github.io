@@ -1,29 +1,30 @@
 // ============================================================
-// VHEOA — Merchant submission form
+// VHEOA — Merchant directory + submission form
 // ============================================================
 
 import { sb } from './supabase.js';
 import { COUNTRIES } from './countries.js';
 import { initMerchantBoard } from './merchant-board.js';
 
+// ------------------------------------------------------------
+// Boot
+// ------------------------------------------------------------
 initMerchantBoard();
 loadRankTargets();
 
-const form = document.getElementById('merchant-form');
-const msg  = document.getElementById('merchant-msg');
-const btn  = document.getElementById('merchant-submit');
-
+// ------------------------------------------------------------
+// Country dropdown
+// ------------------------------------------------------------
 const countrySel = document.getElementById('country');
 countrySel.innerHTML =
   `<option value="">Select country…</option>` +
   COUNTRIES.map((c) => `<option value="${c.code}">${c.name}</option>`).join('');
 
 // ------------------------------------------------------------
-// Load rank targets + countdown
+// Rank targets
 // ------------------------------------------------------------
 async function loadRankTargets() {
   const el = document.getElementById('rank-targets-content');
-  const header = document.getElementById('rank-targets');
   if (!el) return;
 
   const { data, error } = await sb.rpc('merchant_rank_targets');
@@ -41,10 +42,9 @@ async function loadRankTargets() {
 
   const rows = (data.ranks || []).map((r) => {
     const required = Number(r.week_score_usd) + 5;
-    const label =
-      r.business_name
-        ? `Rank #${r.rank} — ${esc(r.business_name)} ($${Number(r.week_score_usd).toFixed(2)})`
-        : `Rank #${r.rank} — be the first`;
+    const label = r.business_name
+      ? `Rank #${r.rank} — ${esc(r.business_name)} ($${Number(r.week_score_usd).toFixed(2)})`
+      : `Rank #${r.rank} — be the first`;
     return `
       <button type="button" class="rank-target" data-amount="${required.toFixed(2)}">
         <span class="rank-target-label">${label}</span>
@@ -61,36 +61,22 @@ async function loadRankTargets() {
     </p>
   `;
 
-  // Wire click → pre-fill amount
   el.querySelectorAll('.rank-target').forEach((b) => {
     b.addEventListener('click', () => {
-      document.getElementById('amount_usd').value =
-        Number(b.dataset.amount).toFixed(2);
-      document.getElementById('amount_usd').focus();
+      const amountField = document.getElementById('amount_usd');
+      amountField.value = Number(b.dataset.amount).toFixed(2);
+      amountField.focus();
+      amountField.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   });
 }
 
-function formatCountdown(sec) {
-  const d = Math.floor(sec / 86400);
-  const h = Math.floor((sec % 86400) / 3600);
-  const m = Math.floor((sec % 3600) / 60);
-  if (d > 0) return `${d}d ${h}h`;
-  if (h > 0) return `${h}h ${m}m`;
-  return `${m}m`;
-}
-
-function esc(s) {
-  return String(s ?? '').replace(/[&<>"']/g, (c) =>
-    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]),
-  );
-}
-
-// Populate countries
-const countrySel = document.getElementById('country');
-countrySel.innerHTML =
-  `<option value="">Select country…</option>` +
-  COUNTRIES.map((c) => `<option value="${c.code}">${c.name}</option>`).join('');
+// ------------------------------------------------------------
+// Submission form
+// ------------------------------------------------------------
+const form = document.getElementById('merchant-form');
+const msg  = document.getElementById('merchant-msg');
+const btn  = document.getElementById('merchant-submit');
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -114,7 +100,7 @@ form.addEventListener('submit', async (e) => {
   }
 
   btn.disabled = true;
-  btn.textContent = 'Fetching BTC price…';
+  btn.textContent = 'Generating invoice…';
 
   try {
     const { data, error } = await sb.rpc('create_merchant_invoice', payload);
@@ -130,8 +116,26 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
+// ------------------------------------------------------------
+// Helpers
+// ------------------------------------------------------------
 function show(text) {
   msg.textContent = text;
   msg.className = 'message error';
   msg.classList.remove('hidden');
+}
+
+function formatCountdown(sec) {
+  const d = Math.floor(sec / 86400);
+  const h = Math.floor((sec % 86400) / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  if (d > 0) return `${d}d ${h}h`;
+  if (h > 0) return `${h}h ${m}m`;
+  return `${m}m`;
+}
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, (c) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]),
+  );
 }
