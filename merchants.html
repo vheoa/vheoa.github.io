@@ -29,7 +29,22 @@
     <p>Weekly rankings, no subscriptions. Minimum entry $5. Deposit to climb — everyone starts fresh every 7 days.</p>
   </section>
 
-  <section class="merchant-info card" style="max-width:720px;">
+  <!-- Current leaderboard -->
+  <section id="merchant-board" style="margin: 20px 0 40px;">
+    <p class="loading">Loading merchants…</p>
+  </section>
+
+  <!-- Ranking targets -->
+  <div id="rank-targets" class="card" style="max-width:720px;">
+    <h2 style="margin-top:0; font-size:1.1rem;">Ranking targets</h2>
+    <p class="dim" style="margin-top:-8px; font-size:0.9rem;">
+      To outrank a merchant, deposit <strong>$5 more</strong> than their weekly score.
+    </p>
+    <div id="rank-targets-content" class="dim">Loading current ranks…</div>
+  </div>
+
+  <!-- How it works -->
+  <section class="merchant-info card" style="max-width:720px; margin-top:24px;">
     <h2 style="margin-top:0;">How it works</h2>
     <ol class="merchant-steps">
       <li>Fill in your business details below.</li>
@@ -42,13 +57,8 @@
       Submitting your business here will create a real invoice. If you're just exploring, don't submit yet.
     </p>
   </section>
-  <div id="rank-targets" class="card" style="max-width:720px;">
-    <h2 style="margin-top:0; font-size:1.1rem;">Ranking targets</h2>
-    <p class="dim" style="margin-top:-8px; font-size:0.9rem;">
-      To outrank a merchant, deposit <strong>$5 more</strong> than their weekly score.
-    </p>
-    <div id="rank-targets-content" class="dim">Loading current ranks…</div>
-  </div>
+
+  <!-- Submission form -->
   <form id="merchant-form" class="card" novalidate style="max-width:720px;">
 
     <div class="field">
