@@ -12,7 +12,6 @@ if (!invoiceId) {
   root.innerHTML = `<p class="empty">No invoice specified.</p>`;
 } else {
   load();
-  // Poll every 10 seconds for payment status
   setInterval(load, 10000);
 }
 
@@ -25,14 +24,13 @@ async function load() {
   }
 
   const expiresAt = new Date(data.expires_at);
-  const now = new Date();
-  const secondsLeft = Math.max(0, Math.floor((expiresAt - now) / 1000));
+  const secondsLeft = Math.max(0, Math.floor((expiresAt - new Date()) / 1000));
   const minutesLeft = Math.floor(secondsLeft / 60);
   const expired = secondsLeft <= 0 && data.status === 'pending';
 
   const statusBadge = {
     pending:   `<span class="badge badge-warn">Awaiting payment</span>`,
-    detected:  `<span class="badge badge-info">Payment seen — awaiting confirmations</span>`,
+    detected:  `<span class="badge badge-info">Payment seen — awaiting confirmation</span>`,
     confirmed: `<span class="badge badge-ok">Confirmed ✓</span>`,
     expired:   `<span class="badge badge-dim">Expired</span>`,
     cancelled: `<span class="badge badge-dim">Cancelled</span>`,
@@ -40,13 +38,20 @@ async function load() {
 
   const satsFormatted = Number(data.amount_sats).toLocaleString();
   const btcFormatted  = data.amount_btc;
-  const btcUri = `bitcoin:${data.receive_address}?amount=${btcFormatted}`;
+
+  // Context header differs for top-ups
+  const contextLine = data.is_topup
+    ? `<div class="invoice-context">
+         <strong>Top-up</strong> — this payment adds to the existing listing for
+         <em>${esc(data.business_name)}</em> (currently $${Number(data.week_score_usd).toFixed(2)} this week).
+       </div>`
+    : `<p class="dim" style="margin-top:-6px;">New listing for ${esc(data.business_name)}</p>`;
 
   root.innerHTML = `
     <section class="invoice">
       <h1>Invoice</h1>
-      <p class="dim" style="margin-top:-6px;">For ${esc(data.business_name)}</p>
-      <div style="margin-bottom:24px;">${statusBadge}</div>
+      ${contextLine}
+      <div style="margin:16px 0 24px;">${statusBadge}</div>
 
       <div class="invoice-grid">
 
@@ -79,7 +84,6 @@ async function load() {
       <div class="invoice-block wide invoice-warning">
         <strong>⚠ Send the exact amount shown above.</strong>
         The last few digits are unique to this invoice so we can match your payment.
-        Sending a different amount may delay or prevent activation.
       </div>
 
       ${
@@ -105,14 +109,16 @@ async function load() {
       ${
         data.status === 'confirmed'
           ? `<p class="message success" style="margin-top:24px;">
-               Payment confirmed. Your listing is now active on the merchant leaderboard.
+               Payment confirmed.
+               ${data.is_topup
+                 ? `Your listing now has <strong>$${(Number(data.week_score_usd) + Number(data.amount_usd)).toFixed(2)}</strong> this week.`
+                 : `Your listing is now active on the merchant leaderboard.`}
              </p>`
           : ''
       }
 
       <p class="dim" style="margin-top:32px; font-size:0.9rem;">
-        Keep this page open — it refreshes every 10 seconds and will update the moment
-        we detect your transaction.
+        Keep this page open — it refreshes every 10 seconds.
       </p>
     </section>
   `;
@@ -127,9 +133,8 @@ async function load() {
     flash('Amount copied');
   });
 
-  // Bitcoin URI link on the address itself
   document.getElementById('invoice-address')?.addEventListener('click', () => {
-    location.href = btcUri;
+    location.href = `bitcoin:${data.receive_address}?amount=${btcFormatted}`;
   });
 }
 
