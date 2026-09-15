@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Admin — Vheoa</title>
+<meta name="robots" content="noindex,nofollow" />
+<link rel="icon" href="assets/img/favicon.svg" />
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+<header class="site">
+  <div class="container inner">
+    <a href="/" class="logo">Vheoa</a>
+    <nav>
+      <a href="leaderboard.html">Leaderboard</a>
+      <a href="about.html">About</a>
+      <span id="admin-user" style="margin-left:22px; color:var(--fg-dim); font-size:0.9rem;"></span>
+      <a href="#" id="admin-logout" style="display:none;">Logout</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- Login view -->
+  <section id="login-view" class="card" style="max-width:420px; margin-top:60px;">
+    <h1 style="margin-top:0;">Admin login</h1>
+    <form id="login-form">
+      <div class="field">
+        <label for="login-email">Email</label>
+        <input id="login-email" type="email" required autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="login-password">Password</label>
+        <input id="login-password" type="password" required autocomplete="current-password" />
+      </div>
+      <div id="login-msg" class="message hidden"></div>
+      <button class="btn" id="login-btn" type="submit">Log in</button>
+    </form>
+  </section>
+
+  <!-- Dashboard view -->
+  <section id="dash-view" class="hidden">
+    <section class="hero" style="padding: 40px 0 10px; text-align:left;">
+      <h1>Admin dashboard</h1>
+      <p>Review reports, investigate vote spikes, manage hidden profiles.</p>
+    </section>
+
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-tab="reports">Reports <span id="reports-count"></span></button>
+      <button class="tab" data-tab="spikes">Vote spikes</button>
+      <button class="tab" data-tab="hidden">Hidden students</button>
+    </div>
+
+    <div id="panel-reports" class="tab-panel"></div>
+    <div id="panel-spikes"  class="tab-panel hidden"></div>
+    <div id="panel-hidden"  class="tab-panel hidden"></div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="container">© <span id="year"></span> Vheoa</div>
+</footer>
+
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<script src="assets/js/config.js"></script>
+<script type="module" src="assets/js/admin.js"></script>
+
+</body>
+</html>
