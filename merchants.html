@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Merchants — Vheoa</title>
+<meta name="description" content="List your student-related business on Vheoa. Pay in Bitcoin. 7-day rankings, no subscriptions." />
+<link rel="icon" href="assets/img/favicon.svg" />
+<link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+<header class="site">
+  <div class="container inner">
+    <a href="/" class="logo">Vheoa</a>
+    <nav>
+      <a href="leaderboard.html">Students</a>
+      <a href="merchants.html">Merchants</a>
+      <a href="about.html">About</a>
+      <a href="submit.html">Submit CV</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="hero" style="padding: 40px 0 10px;">
+    <h1>Reach students. Pay in Bitcoin.</h1>
+    <p>Weekly rankings, no subscriptions. Minimum entry $5. Deposit to climb — everyone starts fresh every 7 days.</p>
+  </section>
+
+  <section class="merchant-info card" style="max-width:720px;">
+    <h2 style="margin-top:0;">How it works</h2>
+    <ol class="merchant-steps">
+      <li>Fill in your business details below.</li>
+      <li>We generate a Bitcoin invoice — exact amount and address.</li>
+      <li>Send the exact BTC amount within 30 minutes.</li>
+      <li>Once confirmed on-chain, your listing activates.</li>
+      <li>Every 7 days the leaderboard resets — deposit again to hold your position.</li>
+    </ol>
+    <p class="dim" style="font-size:0.9rem;">
+      Submitting your business here will create a real invoice. If you're just exploring, don't submit yet.
+    </p>
+  </section>
+
+  <form id="merchant-form" class="card" novalidate style="max-width:720px;">
+
+    <div class="field">
+      <label for="business_name">Business name *</label>
+      <input id="business_name" type="text" required maxlength="120" />
+    </div>
+
+    <div class="field">
+      <label for="contact_email">Contact email *</label>
+      <input id="contact_email" type="email" required maxlength="200" />
+      <small>Only used for receipt and support. Not shown publicly.</small>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="category">Category *</label>
+        <select id="category" required>
+          <option value="">Select…</option>
+          <option>Books</option>
+          <option>Stationery</option>
+          <option>Study Tools</option>
+          <option>Tutoring</option>
+          <option>Career Services</option>
+          <option>Housing</option>
+          <option>Course Platform</option>
+          <option>Electronics</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="country">Country *</label>
+        <select id="country" required></select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="website_url">Website <span class="dim">(optional)</span></label>
+      <input id="website_url" type="url" maxlength="300" placeholder="https://…" />
+    </div>
+
+    <div class="field">
+      <label for="description">Short description <span class="dim">(optional)</span></label>
+      <textarea id="description" maxlength="500" rows="3"
+                placeholder="One or two sentences about what you offer students."></textarea>
+    </div>
+
+    <div class="field">
+      <label for="amount_usd">Deposit amount (USD) *</label>
+      <input id="amount_usd" type="number" required min="5" max="10000" step="0.01" value="5.00" />
+      <small>Minimum $5. This is your weekly ranking score. Higher = more visibility.</small>
+    </div>
+
+    <div id="merchant-msg" class="message hidden"></div>
+
+    <button type="submit" class="btn" id="merchant-submit">Create Bitcoin invoice →</button>
+
+  </form>
+
+</main>
+
+<footer class="site">
+  <div class="container">© <span id="year"></span> Vheoa</div>
+</footer>
+
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<script src="assets/js/config.js"></script>
+<script type="module" src="assets/js/merchants.js"></script>
+
+</body>
+</html>
